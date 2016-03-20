@@ -1,3 +1,6 @@
-group = 'org.mhisoft.common-utils'
-description = 'org.mhisoft - common-utils'
 apply from: "gradle-allprojects.gradle"
+group = 'org.mhisoft.java.apps'
+version=PROJECT_VERSION
+
+description = 'org.mhisoft - common-utils'
+
