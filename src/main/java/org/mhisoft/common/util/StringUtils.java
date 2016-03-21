@@ -20,11 +20,12 @@
 
 package org.mhisoft.common.util;
 
+import java.util.UUID;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.IllegalCharsetNameException;
 
 /**
- * Description:
+ * Description:  Utils for simple string manipulations.
  *
  * @author Tony Xue
  * @since Mar, 2016
@@ -83,5 +84,14 @@ public class StringUtils {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Generate a GUID
+	 * @return
+	 */
+	public String getGUID() {
+		UUID uuid = UUID.randomUUID();
+		return  uuid.toString();
 	}
 }
