@@ -3,4 +3,7 @@ group = 'org.mhisoft.java.apps'
 version=PROJECT_VERSION
 
 description = 'org.mhisoft - common-utils'
+dependencies {
+  compile group: 'org.jasypt', name: 'jasypt', version: '1.9.2'
+}
 

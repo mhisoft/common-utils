@@ -90,7 +90,7 @@ public class StringUtils {
 	 * Generate a GUID
 	 * @return
 	 */
-	public String getGUID() {
+	public static String getGUID() {
 		UUID uuid = UUID.randomUUID();
 		return  uuid.toString();
 	}
