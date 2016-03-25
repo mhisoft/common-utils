@@ -40,8 +40,6 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
-import com.sun.istack.internal.NotNull;
-
 /**
  * Description:
  *
@@ -96,7 +94,7 @@ public final class ReflectionUtil {
 	/**
 	 * Gets the value of a field identified by its field name.
 	 */
-	@NotNull
+	
 	public static Object getFieldValue(final Object object, final String name) throws NoSuchFieldException {
 		final Field field = getField(object.getClass(), name);
 		final Object result = getFieldValue(object, field);
@@ -122,7 +120,7 @@ public final class ReflectionUtil {
 	/**
 	 * Set a field identified by name to the specified value.
 	 */
-	public static void setFieldValue(final Object object, final String name, @NotNull final Object value) throws NoSuchFieldException {
+	public static void setFieldValue(final Object object, final String name, final Object value) throws NoSuchFieldException {
 		final Field field = getField(object.getClass(), name);
 
 		try {
@@ -146,7 +144,7 @@ public final class ReflectionUtil {
 	 * @param  value  the object representation of the field value
 	 * @throws java.lang.reflect.InvocationTargetException  if an underlying exception occurs while setting the pseudo field via its setter method
 	 */
-	public static void setPseudoFieldValue(final Object object, final Method setter, @NotNull  final Object value) throws InvocationTargetException {
+	public static void setPseudoFieldValue(final Object object, final Method setter,   final Object value) throws InvocationTargetException {
 		invokeMethod(object, setter, value);
 	}
 
@@ -188,7 +186,7 @@ public final class ReflectionUtil {
 	 * A version of {@link Method#invoke} that allows access to private members.
 	 * Avoids {@link IllegalAccessException}.
 	 */
-	@NotNull
+	
 	public static Object invokeMethod(final Object object, final String methodName)  {
 		final Object result;
 		try {
@@ -206,7 +204,7 @@ public final class ReflectionUtil {
 	 * A version of {@link Method#invoke} that allows access to private members.
 	 * Avoids {@link IllegalAccessException}.
 	 */
-	@NotNull 
+	 
 	public static Object invokeStaticMethod(final Object object, final String methodName) throws InvocationTargetException, NoSuchMethodException {
 		final Method method = getStaticMethod(object.getClass(), methodName);
 		final Object result;
@@ -227,8 +225,8 @@ public final class ReflectionUtil {
 	 * A version of {@link Method#invoke} that allows access to private members.
 	 * Avoids {@link IllegalAccessException}.
 	 */
-	@NotNull
-	public static Object invokeMethod(final Object object, final Method method, @NotNull  final Object... args) throws InvocationTargetException {
+	
+	public static Object invokeMethod(final Object object, final Method method,   final Object... args) throws InvocationTargetException {
 		final Object result;
 		try {
 			setAccessible(method);
@@ -249,8 +247,8 @@ public final class ReflectionUtil {
 	 * A version of {@link Method#invoke} that allows access to private members.
 	 * Avoids {@link IllegalAccessException}.
 	 */
-	@NotNull
-	public static Object invokeStaticMethod(final Method method, @NotNull  final Object... args) throws InvocationTargetException {
+	
+	public static Object invokeStaticMethod(final Method method,   final Object... args) throws InvocationTargetException {
 		final Object result;
 		try {
 			setAccessible(method);
@@ -289,7 +287,7 @@ public final class ReflectionUtil {
 	 * A version of {@link Constructor#newInstance} that allows access to private constructors.
 	 * Avoids {@link IllegalAccessException}.
 	 */
-	public static <T> T newInstance(final Constructor<T> constructor, @NotNull  final Object... args) throws InvocationTargetException,
+	public static <T> T newInstance(final Constructor<T> constructor,   final Object... args) throws InvocationTargetException,
 			InstantiationException {
 		T result;
 		try {
@@ -388,7 +386,7 @@ public final class ReflectionUtil {
 	/**
 	 * Returns the first public setter for the specified property and parameter type, or <code>null</code> for none
 	 */
-	@NotNull 
+	 
 	public static Method getSetterMethod(final Class<?> clazz, final String propertyName, final Class<?> type) {
 		Method result = null;
 		final int excludedModifiers = Modifier.ABSTRACT | Modifier.PRIVATE | Modifier.PROTECTED | Modifier.STATIC;
@@ -417,7 +415,7 @@ public final class ReflectionUtil {
 	/**
 	 * Get the first annotation of the declared type from this object.
 	 */
-	@NotNull 
+	 
 	public static <A extends Annotation> A getAnnotation(final Object object, final Class<A> annotationClass) {
 		if (object == null)
 			throw new IllegalArgumentException("object cannot be null in getAnnotation()");
@@ -541,8 +539,8 @@ public final class ReflectionUtil {
 	 * @param clazz class to inspect
 	 * @return array of interfaces the class implements, or zero-length array if none
 	 */
-	@NotNull
-	public static Class<?>[] getAllInterfaces(@NotNull final Class<?> clazz) {
+	
+	public static Class<?>[] getAllInterfaces( final Class<?> clazz) {
 		final LinkedHashSet<Class<?>> interfaces = new LinkedHashSet<Class<?>>();
 		Class<?> c = clazz;
 		while (c != null) {
@@ -605,7 +603,7 @@ public final class ReflectionUtil {
 	 * an unmodifiable view of that list.
 	 */
 	@SafeVarargs
-	public static <T> List<T> unmodifiableList(@NotNull final T... items) {
+	public static <T> List<T> unmodifiableList( final T... items) {
 		final List<T> result;
 		if (items == null) {
 			result = Collections.unmodifiableList(new ArrayList<T>());
