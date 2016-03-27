@@ -25,6 +25,8 @@ package org.mhisoft.common.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
 
 /**
@@ -44,6 +46,28 @@ public class FileUtils {
 	public static byte[] readFile(final String pathToFile) throws IOException {
 		byte[] array = Files.readAllBytes(new File(pathToFile).toPath());
 		return array;
+	}
+
+
+	public static byte[] concatenateByteArrays(byte[] a, byte[] b) {
+		byte[] result = new byte[a.length + b.length];
+		System.arraycopy(a, 0, result, 0, a.length);
+		System.arraycopy(b, 0, result, a.length, b.length);
+		return result;
+	}
+
+
+	public static int byteArrayToInt(byte[] b) {
+		final ByteBuffer bb = ByteBuffer.wrap(b);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		return bb.getInt();
+	}
+
+	public static byte[] intToByteArray(int i) {
+		final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		bb.putInt(i);
+		return bb.array();
 	}
 
 }
