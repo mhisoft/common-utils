@@ -14,7 +14,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.junit:com.springsource.org.junit:4.7.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.jasypt:jasypt:1.9.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.junit:com.springsource.org.junit:4.7.0" level="project" />
   </component>
 </module>

@@ -24,6 +24,7 @@
 package org.mhisoft.common.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -69,5 +70,58 @@ public class FileUtils {
 		bb.putInt(i);
 		return bb.array();
 	}
+
+	/**
+	 * Pad to total length with zeros at the end.
+	 * @param totalLength
+	 * @param sourceArray
+	 * @return
+	 */
+	public static byte[] padByteArray(final  byte[] sourceArray, final int totalLength) {
+		if (sourceArray.length>totalLength)
+			throw new RuntimeException("total length is not enough for the target array" + totalLength);
+		final ByteBuffer bb = ByteBuffer.allocate(totalLength);
+		bb.put(sourceArray);
+		return bb.array();
+	}
+
+	/**
+	 * trim all the zeros in the array from the end.
+	 * @param sourceArray
+	 * @return
+	 */
+	public static byte[] trimByteArray( byte[] sourceArray) {
+
+		int i;
+		for ( i = sourceArray.length-1; i >= 0; i--) {
+			if (sourceArray[i]==0) {
+				 continue;
+			}
+			else
+				break;
+		}
+
+		final ByteBuffer bb = ByteBuffer.allocate(i+1);
+		bb.put(sourceArray, 0, i+1);
+		return bb.array();
+	}
+
+
+	/**
+	 * Read 4 bytes and convert to int from the fileInputStream
+	 * @param fileInputStream
+	 * @return
+	 * @throws IOException
+	 */
+	public static int readInt(FileInputStream fileInputStream) throws IOException {
+		byte[] bytesInt = new byte[4];
+		int readBytes = fileInputStream.read(bytesInt);
+		if (readBytes!=4)
+			throw new RuntimeException("didn't read 4 bytes for a integer");
+
+		return  FileUtils.byteArrayToInt(bytesInt);
+	}
+
+
 
 }

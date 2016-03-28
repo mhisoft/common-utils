@@ -24,6 +24,8 @@ license see http://www.jasypt.org/license.html
  */
 package org.mhisoft.common.util;
 
+import java.io.IOException;
+import java.security.AlgorithmParameters;
 import java.security.InvalidKeyException;
 import java.security.Provider;
 
@@ -820,12 +822,10 @@ public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncrypt
                 /*
                  * Perform encryption using the Cipher
                  */
-				final PBEParameterSpec parameterSpec =
-						new PBEParameterSpec(salt, this.keyObtentionIterations);
+				final PBEParameterSpec parameterSpec = new PBEParameterSpec(salt, this.keyObtentionIterations);
 
 				synchronized (this.encryptCipher) {
-					this.encryptCipher.init(
-							Cipher.ENCRYPT_MODE, this.key, parameterSpec);
+					this.encryptCipher.init( Cipher.ENCRYPT_MODE, this.key, parameterSpec);
 					encryptedMessage = this.encryptCipher.doFinal(message);
 				}
 
@@ -858,6 +858,16 @@ public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncrypt
 
 	}
 
+	public byte[] getCipherParameters() throws IOException {
+		return  this.encryptCipher.getParameters().getEncoded();
+	}
+
+	public byte[] decrypt(final byte[] encryptedMessage)
+			throws EncryptionOperationNotPossibleException {
+		return  decrypt(encryptedMessage, this.encryptCipher.getParameters());
+
+	}
+
 
 	/**
 	 * <p>
@@ -883,7 +893,7 @@ public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncrypt
 	 * @throws EncryptionInitializationException if initialization could not
 	 *         be correctly done (for example, no password has been set).
 	 */
-	public byte[] decrypt(final byte[] encryptedMessage)
+	public byte[] decrypt(final byte[] encryptedMessage, AlgorithmParameters algorithmParameters)
 			throws EncryptionOperationNotPossibleException {
 
 		if (encryptedMessage == null) {
@@ -958,6 +968,11 @@ public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncrypt
                  */
 //				final PBEParameterSpec parameterSpec =
 //						new PBEParameterSpec(salt, this.keyObtentionIterations);
+//
+				//salt is included in the   algorithmParameters
+//				Object paramSPI = ReflectionUtil.getFieldValue(algorithmParameters, "paramSpi");
+//				ReflectionUtil.setFieldValue(paramSPI, "salt", salt);
+
 
 				synchronized (this.decryptCipher) {
 //MHISoft changed here  to support PBEWithHmacSHA512AndAES_256
@@ -967,7 +982,7 @@ public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncrypt
 					this.decryptCipher.init(
 							Cipher.DECRYPT_MODE, //
 							this.key, //
-							this.encryptCipher.getParameters()
+							algorithmParameters
 					);
 
 					decryptedMessage =

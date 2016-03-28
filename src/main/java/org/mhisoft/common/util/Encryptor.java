@@ -23,24 +23,65 @@
 
 package org.mhisoft.common.util;
 
+import java.io.IOException;
+import java.security.AlgorithmParameters;
+
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+
 /**
- * Description:
+ * Description: Encryptor does encryption and decryption
  *
  * @author Tony Xue
  * @since Mar, 2016
  */
-public class Encryptor{
+public class Encryptor {
+	String password;
+	private StandardPBEByteEncryptor encryptor;
+	private static Encryptor instance ;
+	public static final String ALGORITHM = "PBEWithHmacSHA512AndAES_256";
 
+	public static Encryptor createInstance(final String password) {
+        instance = new Encryptor(password);
+		return instance;
+	}
 
+	public static Encryptor getInstance() {
+		return instance;
+	}
 
+	public  Encryptor(String password) {
+		this.password = password;
+		init();
+	}
 
-	public static void main(String[] args) {
-
+	private void init() {
+		encryptor = new StandardPBEByteEncryptor();
+		encryptor.setAlgorithm(ALGORITHM);
+		encryptor.setPassword(this.password);
+		encryptor.setProviderName("SunJCE");
+		encryptor.initialize();
 
 	}
 
+	/**
+	 * Get and save the params after the encryption. It has random salt and IvParameterSpec
+	 * @return
+	 * @throws IOException
+	 */
+	public byte[] getCipherParameters() throws IOException {
+		return encryptor.getCipherParameters();
+	}
 
 
+	public byte[] encrypt(byte[] input) throws EncryptionOperationNotPossibleException {
+		byte[] enc = encryptor.encrypt(input);
+		return enc;
+	}
+
+	public byte[] decrypt(byte[] input, AlgorithmParameters algorithmParameters) throws EncryptionOperationNotPossibleException {
+		byte[] dec = encryptor.decrypt(input, algorithmParameters);
+		return dec;
+	}
 
 
 }
