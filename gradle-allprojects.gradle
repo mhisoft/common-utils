@@ -65,7 +65,17 @@ allprojects {
         output.resourcesDir 'target/classes'
       }
     }
+
+
+    test {
+      java {
+        srcDirs = ['src/test/java']
+      }
+    }
+
   }
+
+
 
   jar {
     destinationDir = file('target')
