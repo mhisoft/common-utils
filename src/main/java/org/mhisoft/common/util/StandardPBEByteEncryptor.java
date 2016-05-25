@@ -1031,5 +1031,14 @@ public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncrypt
 
 	}
 
+
+
+	public byte[] generateSalt() {
+		// Create salt
+		byte[] salt = this.saltGenerator.generateSalt(this.saltSizeBytes);
+		return salt;
+
+	}
+
 }
 

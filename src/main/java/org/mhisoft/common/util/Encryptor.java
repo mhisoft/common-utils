@@ -61,6 +61,11 @@ public class Encryptor {
 		encryptor.setProviderName("SunJCE");
 		encryptor.initialize();
 
+		Thread t = new Thread( new SaltInit() );
+		t.setDaemon(true);
+		t.start();
+
+
 	}
 
 	/**
@@ -81,6 +86,15 @@ public class Encryptor {
 	public byte[] decrypt(byte[] input, AlgorithmParameters algorithmParameters) throws EncryptionOperationNotPossibleException {
 		byte[] dec = encryptor.decrypt(input, algorithmParameters);
 		return dec;
+	}
+
+	class SaltInit implements  Runnable {
+		@Override
+		public void run() {
+			//call this once to prepare the salt generator.
+			//which take time.
+			encryptor.generateSalt();
+		}
 	}
 
 
