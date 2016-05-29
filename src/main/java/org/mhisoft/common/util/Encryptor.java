@@ -37,24 +37,29 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 public class Encryptor {
 	String password;
 	private StandardPBEByteEncryptor encryptor;
-	private static Encryptor instance ;
+	//private static Encryptor instance ;
 	public static final String ALGORITHM = "PBEWithHmacSHA512AndAES_256";
 
-	public static Encryptor createInstance(final String password) {
-        instance = new Encryptor(password);
-		return instance;
+//	public static Encryptor createInstance(final String password) {
+//        instance = new Encryptor(password);
+//		return instance;
+//	}
+//
+//	public static Encryptor getInstance() {
+//		return instance;
+//	}
+
+
+	public Encryptor() {
 	}
 
-	public static Encryptor getInstance() {
-		return instance;
+	public Encryptor(String password) {
+		init(password);
 	}
 
-	public  Encryptor(String password) {
-		this.password = password;
-		init();
-	}
-
-	private void init() {
+	//need password to init.
+	protected void init(String pass) {
+		this.password = pass;
 		encryptor = new StandardPBEByteEncryptor();
 		encryptor.setAlgorithm(ALGORITHM);
 		encryptor.setPassword(this.password);
