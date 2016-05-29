@@ -73,7 +73,7 @@ public class HashingUtils {
 	// These constants may be changed without breaking existing hashes.
 	public static final int SALT_BYTE_SIZE = 24;
 	public static final int HASH_BYTE_SIZE = 18;
-	public static final int PBKDF2_ITERATIONS = 64000;
+	public static final int PBKDF2_ITERATIONS = 32000;
 
 	// These constants define the encoding and may not be changed.
 	public static final int HASH_SECTIONS = 5;
@@ -235,4 +235,27 @@ public class HashingUtils {
 		return Base64.getEncoder().encodeToString( array );
 	}
 
+
+
+	public static void init() {
+		Thread t = new Thread( new HashUtilInit() );
+		t.setDaemon(true);
+		t.start();
+	}
+
+
+}
+
+
+class HashUtilInit implements  Runnable {
+	@Override
+	public void run() {
+		//call this once to prepare the salt generator.
+		//which take time.
+		try {
+			HashingUtils.createHash("test");
+		} catch (HashingUtils.CannotPerformOperationException e) {
+			//e.printStackTrace();
+		}
+	}
 }

@@ -29,12 +29,18 @@
  */
 package org.mhisoft.common.util;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import junit.framework.Assert;
 
 public class HashingUtilsTest
 {
+
+	@BeforeClass
+	public static void setup() {
+		HashingUtils.init();
+	}
 
 
 	// Make sure truncated hashes don't validate.
@@ -98,6 +104,7 @@ public class HashingUtilsTest
 			for(int i = 0; i < 10; i++)
 			{
 				String password = ""+i;
+				long t1 = System.currentTimeMillis();
 				String hash = HashingUtils.createHash(password);
 				String secondHash = HashingUtils.createHash(password);
 				System.out.println(hash+"<-->"+secondHash);
@@ -106,14 +113,26 @@ public class HashingUtilsTest
 					failure = true;
 				}
 				String wrongPassword = ""+(i+1);
+
+				long t2 = System.currentTimeMillis();
+				System.out.println("\t\t createHash took "+ (t2-t1));
+
+				t1 = System.currentTimeMillis();
 				if(HashingUtils.verifyPassword(wrongPassword, hash)) {
 					System.out.println("FAILURE: WRONG PASSWORD ACCEPTED!");
 					failure = true;
 				}
+				t2 = System.currentTimeMillis();
+				System.out.println("\t\t verifyPassword took "+ (t2-t1));
+
+
+				t1 = System.currentTimeMillis();
 				if(!HashingUtils.verifyPassword(password, hash)) {
 					System.out.println("FAILURE: GOOD PASSWORD NOT ACCEPTED!");
 					failure = true;
 				}
+				t2 = System.currentTimeMillis();
+				System.out.println("\t\t verifyPassword took "+ (t2-t1));
 			}
 			if(failure) {
 				System.out.println("TESTS FAILED!");
