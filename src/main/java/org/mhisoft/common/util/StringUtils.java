@@ -33,6 +33,12 @@ import java.nio.charset.IllegalCharsetNameException;
 public class StringUtils {
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
+
+	public static boolean hasValue(final String s) {
+		return s!=null && s.trim().length()>0;
+	}
+
+
 	/**
 	 * String to Byte array
 	 * @param str
