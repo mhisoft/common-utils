@@ -83,6 +83,30 @@ public class HashingUtils {
 	public static final int SALT_INDEX = 3;
 	public static final int PBKDF2_INDEX = 4;
 
+	static SecureRandom random = null;
+	final transient  static Object lock = new Object();
+
+	private static SecureRandom getSecureRandom() {
+		if (random==null) {
+			synchronized (lock) {
+				if (random==null) {
+					random = new SecureRandom();
+					long t1 = System.currentTimeMillis();
+					byte[] salt = new byte[SALT_BYTE_SIZE];
+					random.nextBytes(salt);
+					long t2 = System.currentTimeMillis();
+					System.out.println(" random:" + (t2-t1) );
+				}
+				return random;
+			}
+		}
+		else
+			return random;
+
+
+	}
+
+
 	public static String createHash(String password)
 			throws CannotPerformOperationException
 	{
@@ -92,10 +116,19 @@ public class HashingUtils {
 	public static String createHash(char[] password)
 			throws CannotPerformOperationException
 	{
-		// Generate a random salt
-		SecureRandom random = new SecureRandom();
+//		// Generate a random salt
+
+//		SecureRandom random = new SecureRandom();
+//		byte[] salt = new byte[SALT_BYTE_SIZE];
+//		random.nextBytes(salt);
+
+
+		SecureRandom random = getSecureRandom();
 		byte[] salt = new byte[SALT_BYTE_SIZE];
 		random.nextBytes(salt);
+
+
+
 
 		// Hash the password
 		byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
@@ -190,10 +223,17 @@ public class HashingUtils {
 
 		// Compute the hash of the provided password, using the same salt,
 		// iteration count, and hash length
+		long t1 = System.currentTimeMillis();
 		byte[] testHash = pbkdf2(password, salt, iterations, hash.length);
+		long t2 = System.currentTimeMillis();
+		System.out.println("\tpbkdf2(), took" + (t2-t1));
+
 		// Compare the hashes in constant time. The password is correct if
 		// both hashes match.
-		return slowEquals(hash, testHash);
+		boolean b=  slowEquals(hash, testHash);
+		long t3 = System.currentTimeMillis();
+		System.out.println("\tslowEquals(), took" + (t3-t2));
+		return b;
 	}
 
 	private static boolean slowEquals(byte[] a, byte[] b)
@@ -253,7 +293,10 @@ class HashUtilInit implements  Runnable {
 		//call this once to prepare the salt generator.
 		//which take time.
 		try {
+			long t1 = System.currentTimeMillis();
 			HashingUtils.createHash("test");
+			long t2 = System.currentTimeMillis();
+			System.out.println("HashUtilInit completed, took " + (t2-t1));
 		} catch (HashingUtils.CannotPerformOperationException e) {
 			//e.printStackTrace();
 		}

@@ -176,4 +176,42 @@ public class HashingUtilsTest
 		}
 
 	}
+
+
+	@Test
+	public  void  testCreateHash()
+	{
+		try
+		{
+			// Test password validation
+			boolean failure = false;
+			for(int i = 0; i < 10; i++)
+			{
+				String password = "abcABC!" + i;
+				long t1 = System.currentTimeMillis();
+				String hash = HashingUtils.createHash(password);
+				System.out.println("pass:" + password +", hash=" + hash );
+
+				long t2 = System.currentTimeMillis();
+				System.out.println("\t\t createHash took "+ (t2-t1));
+
+				HashingUtils.verifyPassword(password, hash );
+				long t3 = System.currentTimeMillis();
+				System.out.println("\t\t verify took "+ (t3-t1));
+
+
+			}
+			if(failure) {
+				System.out.println("TESTS FAILED!");
+				Assert.fail();
+				System.exit(1);
+			}
+		}
+		catch(Exception ex)
+		{
+			Assert.fail();
+			System.out.println("ERROR: " + ex);
+			System.exit(1);
+		}
+	}
 }
