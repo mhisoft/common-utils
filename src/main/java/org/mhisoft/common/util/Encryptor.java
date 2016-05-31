@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.security.AlgorithmParameters;
 
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.jasypt.salt.RandomSaltGenerator;
 
 /**
  * Description: Encryptor does encryption and decryption
@@ -35,6 +36,7 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
  * @since Mar, 2016
  */
 public class Encryptor {
+
 	String password;
 	private StandardPBEByteEncryptor encryptor;
 	//private static Encryptor instance ;
@@ -50,7 +52,11 @@ public class Encryptor {
 //	}
 
 
+	//share a  resuable salt generator.
+	static RandomSaltGenerator saltGenerator = new RandomSaltGenerator() ;
+
 	public Encryptor() {
+
 	}
 
 	public Encryptor(String password) {
@@ -61,11 +67,13 @@ public class Encryptor {
 	protected void init(String pass) {
 		this.password = pass;
 		encryptor = new StandardPBEByteEncryptor();
+		encryptor.setSaltGenerator(saltGenerator);
 		encryptor.setAlgorithm(ALGORITHM);
 		encryptor.setPassword(this.password);
 		encryptor.setProviderName("SunJCE");
 		encryptor.initialize();
 
+		//initialize and generate a salt
 		Thread t = new Thread( new SaltInit() );
 		t.setDaemon(true);
 		t.start();
@@ -98,7 +106,11 @@ public class Encryptor {
 		public void run() {
 			//call this once to prepare the salt generator.
 			//which take time.
+			long t1 = System.currentTimeMillis();
 			encryptor.generateSalt();
+			long t2 = System.currentTimeMillis();
+			System.out.println("encryptor initialized, took " +(t2-t1));
+
 		}
 	}
 

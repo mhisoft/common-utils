@@ -24,7 +24,9 @@
 
 package org.mhisoft.common.util;
 
+import java.io.IOException;
 import java.security.AlgorithmParameters;
+import java.security.NoSuchAlgorithmException;
 
 import org.junit.Test;
 
@@ -85,4 +87,44 @@ public class EncryptorTest {
 			e.printStackTrace();
 		}
 	}
+
+
+	@Test
+	public void testIterate() {
+		String passBase = "test-23*(&r";
+		String s2 = "2.FooBar 2397 时尚 ~!)\\u";
+
+		try {
+			for (int i = 0; i < 10; i++) {
+
+				long t1 = System.currentTimeMillis();
+
+
+				Encryptor encryptor = new Encryptor(passBase+i);
+				byte[] encText = encryptor.encrypt( StringUtils.getBytes(s2+ Integer.valueOf(i) )  ) ;
+				System.out.println(StringUtils.toHexString(encText));
+
+				byte[] params = encryptor.getCipherParameters();
+
+
+				//decrypt using a new instance of encryptor.
+				AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(Encryptor.ALGORITHM);
+				algorithmParameters.init(params);
+				Encryptor decryptor = new Encryptor(passBase+i);
+				byte[]  dec = decryptor.decrypt(encText, algorithmParameters);
+				System.out.println(StringUtils.bytesToString(dec));
+
+				//you code to be timed here
+				long t2 = System.currentTimeMillis();
+				System.out.println("iteration, took " + (t2 - t1));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 }
