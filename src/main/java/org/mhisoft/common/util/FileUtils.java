@@ -23,11 +23,14 @@
 
 package org.mhisoft.common.util;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 
 /**
@@ -122,6 +125,73 @@ public class FileUtils {
 		return  FileUtils.byteArrayToInt(bytesInt);
 	}
 
+	private static final int BUFFER = 4096*16;
+	//nioBufferCopy
+
+	/**
+	 *
+	 * @param source
+	 * @param target
+	 * @throws IOException
+	 */
+	public static void copyFile(final File source, final File target  ) throws IOException {
+		FileChannel in = null;
+		FileChannel out = null;
+	//	long totalFileSize = 0;
+
+		try {
+			in = new FileInputStream(source).getChannel();
+			out = new FileOutputStream(target).getChannel();
+			//totalFileSize = in.size();
+
+			ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER);
+			int readSize = in.read(buffer);
+			long totalRead = 0;
+			//int progress = 0;
+
+			//long startTime, endTime  ;
+
+			while (readSize != -1) {
+
+				//startTime = System.currentTimeMillis();
+				totalRead = totalRead + readSize;
+
+				//progress = (int) (totalRead * 100 / totalFileSize);
+
+
+				buffer.flip();
+
+				while (buffer.hasRemaining()) {
+					out.write(buffer);
+					//System.out.printf(".");
+					//showPercent(rdProUI, totalSize/size );
+				}
+				buffer.clear();
+				readSize = in.read(buffer);
+
+
+				//endTime = System.currentTimeMillis();
+			}
+
+
+
+		} finally {
+			close(in);
+			close(out);
+
+		}
+	}
+
+
+	private static void close(Closeable closable) {
+		if (closable != null) {
+			try {
+				closable.close();
+			} catch (IOException e) {
+				//
+			}
+		}
+	}
 
 
 }
