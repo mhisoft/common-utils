@@ -43,6 +43,7 @@ public class FileUtils {
 
 	/**
 	 * Read the  <bold>small</bold> file into a byte array.
+	 *
 	 * @param pathToFile the path to the file.
 	 * @return content of the file in bytes.
 	 * @throws IOException
@@ -76,12 +77,13 @@ public class FileUtils {
 
 	/**
 	 * Pad to total length with zeros at the end.
+	 *
 	 * @param totalLength
 	 * @param sourceArray
 	 * @return
 	 */
-	public static byte[] padByteArray(final  byte[] sourceArray, final int totalLength) {
-		if (sourceArray.length>totalLength)
+	public static byte[] padByteArray(final byte[] sourceArray, final int totalLength) {
+		if (sourceArray.length > totalLength)
 			throw new RuntimeException("total length is not enough for the target array" + totalLength);
 		final ByteBuffer bb = ByteBuffer.allocate(totalLength);
 		bb.put(sourceArray);
@@ -90,28 +92,29 @@ public class FileUtils {
 
 	/**
 	 * trim all the zeros in the array from the end.
+	 *
 	 * @param sourceArray
 	 * @return
 	 */
-	public static byte[] trimByteArray( byte[] sourceArray) {
+	public static byte[] trimByteArray(byte[] sourceArray) {
 
 		int i;
-		for ( i = sourceArray.length-1; i >= 0; i--) {
-			if (sourceArray[i]==0) {
-				 continue;
-			}
-			else
+		for (i = sourceArray.length - 1; i >= 0; i--) {
+			if (sourceArray[i] == 0) {
+				continue;
+			} else
 				break;
 		}
 
-		final ByteBuffer bb = ByteBuffer.allocate(i+1);
-		bb.put(sourceArray, 0, i+1);
+		final ByteBuffer bb = ByteBuffer.allocate(i + 1);
+		bb.put(sourceArray, 0, i + 1);
 		return bb.array();
 	}
 
 
 	/**
 	 * Read 4 bytes and convert to int from the fileInputStream
+	 *
 	 * @param fileInputStream
 	 * @return
 	 * @throws IOException
@@ -119,25 +122,24 @@ public class FileUtils {
 	public static int readInt(FileInputStream fileInputStream) throws IOException {
 		byte[] bytesInt = new byte[4];
 		int readBytes = fileInputStream.read(bytesInt);
-		if (readBytes!=4)
+		if (readBytes != 4)
 			throw new RuntimeException("didn't read 4 bytes for a integer");
 
-		return  FileUtils.byteArrayToInt(bytesInt);
+		return FileUtils.byteArrayToInt(bytesInt);
 	}
 
-	private static final int BUFFER = 4096*16;
+	private static final int BUFFER = 4096 * 16;
 	//nioBufferCopy
 
 	/**
-	 *
 	 * @param source
 	 * @param target
 	 * @throws IOException
 	 */
-	public static void copyFile(final File source, final File target  ) throws IOException {
+	public static void copyFile(final File source, final File target) throws IOException {
 		FileChannel in = null;
 		FileChannel out = null;
-	//	long totalFileSize = 0;
+		//	long totalFileSize = 0;
 
 		try {
 			in = new FileInputStream(source).getChannel();
@@ -174,7 +176,6 @@ public class FileUtils {
 			}
 
 
-
 		} finally {
 			close(in);
 			close(out);
@@ -191,6 +192,32 @@ public class FileUtils {
 				//
 			}
 		}
+	}
+
+
+	public  static String[] splitFileParts(final String fileWithPath) {
+
+		String[] ret = new String[3];
+		int k = fileWithPath.lastIndexOf(File.separator);
+		String dir = "";
+		String fileName="";
+		String fileExt="";
+		if (k > -1) {
+			dir = fileWithPath.substring(0, k);                         // no slash at the end
+			fileName = fileWithPath.substring(k + 1, fileWithPath.length());
+		} else
+			fileName = fileWithPath;
+
+
+		String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
+		fileName = tokens[0];
+		fileExt = tokens[1];
+
+
+		ret[0] = dir;
+		ret[1] = fileName;
+		ret[2] = fileExt;
+		return ret;
 	}
 
 
