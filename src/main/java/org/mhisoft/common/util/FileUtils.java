@@ -195,6 +195,11 @@ public class FileUtils {
 	}
 
 
+	/**
+	 * Splut the file with full patch into three tokens. 1. dir, 2.filename, 3. extension
+	 * @param fileWithPath
+	 * @return
+	 */
 	public  static String[] splitFileParts(final String fileWithPath) {
 
 		String[] ret = new String[3];
