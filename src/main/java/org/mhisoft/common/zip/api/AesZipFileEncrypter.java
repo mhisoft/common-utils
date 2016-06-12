@@ -42,6 +42,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.mhisoft.common.zip.impl.AESEncrypter;
+import org.mhisoft.common.zip.impl.ByteArrayHelper;
 import org.mhisoft.common.zip.impl.ExtZipEntry;
 import org.mhisoft.common.zip.impl.ExtZipOutputStream;
 import org.mhisoft.common.zip.impl.ZipFileEntryInputStream;
@@ -138,8 +139,11 @@ public class AesZipFileEncrypter {
 		entry.initEncryptedEntry();
 
 		zipOS.putNextEntry(entry);
-		// ZIP-file data contains: 1. salt 2. pwVerification 3. encryptedContent 4. authenticationCode
-		zipOS.writeBytes(encrypter.getSalt());
+		// ZIP-file data contains: 1. salt or paramSpec size and and salt/paramSpec
+		// 2. pwVerification 3. encryptedContent 4. authenticationCode
+		byte[] saltOrParamSpec = encrypter.getSalt();
+		zipOS.writeInt(saltOrParamSpec.length);
+		zipOS.writeBytes(saltOrParamSpec);
 		zipOS.writeBytes(encrypter.getPwVerification());
 
 		byte[] data = new byte[1024];
@@ -218,18 +222,34 @@ public class AesZipFileEncrypter {
 		ExtZipEntry entry = new ExtZipEntry(name);
 		entry.setMethod(ZipEntry.DEFLATED);
 		entry.setSize(inputLen);
-		entry.setCompressedSize(data.length + 28);
+
+
+		byte[] saltOrParamSpec = encrypter.getSalt();
+
+		//entry.setCompressedSize(data.length + 28);  //hard code 28
+		//MHISoft modified
+		entry.setCompressedSize(data.length + saltOrParamSpec.length+2+10);
+
+
 		entry.setTime((new java.util.Date()).getTime());
 		entry.initEncryptedEntry();
 
 		zipOS.putNextEntry(entry);
-		// ZIP-file data contains: 1. salt 2. pwVerification 3. encryptedContent 4. authenticationCode
-		zipOS.writeBytes(encrypter.getSalt());
+		// ZIP-file data contains: 1. salt or paramSpec size and and salt/paramSpec   size 16/100 bytes
+		// 2. pwVerification  size 2 bytes
+		// 3. encryptedContent  data.length
+		// 4. authenticationCode  ,10 bytes
+		zipOS.writeInt(saltOrParamSpec.length);   //extra 4 bytes
+
+		zipOS.writeBytes(saltOrParamSpec);
 		zipOS.writeBytes(encrypter.getPwVerification());
 
+
+		//3. data content
 		encrypter.encrypt(data, data.length);
 		zipOS.writeBytes(data, 0, data.length);
 
+		//4. authenticationCode
 		byte[] finalAuthentication = encrypter.getFinalAuthentication();
 		if (LOG.isLoggable(Level.FINE)) {
 			LOG.fine("finalAuthentication=" + Arrays.toString(finalAuthentication) + " at pos="
@@ -237,6 +257,16 @@ public class AesZipFileEncrypter {
 		}
 
 		zipOS.writeBytes(finalAuthentication);
+
+		if (LOG.isLoggable(Level.FINE)) {
+
+			LOG.fine(" 1. saltOrParamSpec.length      = " +  saltOrParamSpec.length);
+			LOG.fine(" 2. saltOrParamSpec   = " + ByteArrayHelper.toString(saltOrParamSpec) );
+			LOG.fine(" 3. PwVerification   = " + ByteArrayHelper.toString(encrypter.getPwVerification()) + " - " + 	encrypter.getPwVerification().length);
+
+			LOG.fine(" 4. data.length      = " +  data.length);
+			LOG.fine(" 5. finalAuthentication   = " + ByteArrayHelper.toString(finalAuthentication) + " - " + finalAuthentication.length);
+		}
 	}
 
 	// --------------------------------------------------------------------------

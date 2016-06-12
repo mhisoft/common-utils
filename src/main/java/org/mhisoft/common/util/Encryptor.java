@@ -26,11 +26,14 @@ package org.mhisoft.common.util;
 import java.io.IOException;
 import java.security.AlgorithmParameters;
 
+import javax.crypto.SecretKey;
+
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.salt.RandomSaltGenerator;
 
 /**
- * Description: Encryptor does encryption and decryption
+ * Description:  Does encryption and decryption
+ * Usage. init() first and use the same instance to do encrypt() and decrypt()
  *
  * @author Tony Xue
  * @since Mar, 2016
@@ -113,6 +116,12 @@ public class Encryptor {
 
 		}
 	}
+
+	public SecretKey getKey() {
+		return encryptor.getKey();
+	}
+
+
 
 
 }

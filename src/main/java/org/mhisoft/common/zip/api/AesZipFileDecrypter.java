@@ -203,16 +203,22 @@ public class AesZipFileDecrypter implements ZipConstants {
 		}
 		
 		int cryptoHeaderOffset = zipEntry.getOffset() - cde.getCryptoHeaderLength();
-		
-		byte[] salt = raFile.readByteArray( cryptoHeaderOffset, 16 );
-		byte[] pwVerification = raFile.readByteArray( cryptoHeaderOffset+16, 2 );
+
+		//salt 16 bytes
+		//byte[] salt = raFile.readByteArray( cryptoHeaderOffset, 16 );
+
+		int saltSize = raFile.readInt();
+		byte[] salt = raFile.readByteArray(cryptoHeaderOffset, saltSize);
+
+		 //pwVerification two bytes
+		byte[] pwVerification = raFile.readByteArray( cryptoHeaderOffset+saltSize, 2 );
 
 		if( LOG.isLoggable(Level.FINEST) ) {
 			LOG.finest( "\n" + cde.toString() );
 			LOG.finest( "offset    = " + zipEntry.getOffset() );
 			LOG.finest( "cryptoOff = " + cryptoHeaderOffset );
 			LOG.finest( "password  = " + password + " - " + password.length() );
-			LOG.finest( "salt      = " + ByteArrayHelper.toString(salt) + " - " + salt.length );
+			LOG.finest( "salt/paramSpec      = " + ByteArrayHelper.toString(salt) + " - " + salt.length );
 			LOG.finest( "pwVerif   = " + ByteArrayHelper.toString(pwVerification) + " - " + pwVerification.length );
 		}
 		
@@ -330,27 +336,38 @@ public class AesZipFileDecrypter implements ZipConstants {
 			if (!cde.isAesEncrypted()) {
 				throw new ZipException("only AES encrypted files are supported");
 			}
-			int cryptoHeaderOffset = zipEntry.getOffset() - cde.getCryptoHeaderLength();
-			byte[] salt = raFile.readByteArray(cryptoHeaderOffset, 16);
-			byte[] pwVerification = raFile.readByteArray(cryptoHeaderOffset + 16, 2);			
-			if (LOG.isLoggable(Level.FINEST)) {
-				LOG.finest("\n" + cde.toString());
-				LOG.finest("offset    = " + zipEntry.getOffset());
-				LOG.finest("cryptoOff = " + cryptoHeaderOffset);
-				LOG.finest("password  = " + password + " - " + password.length());
-				LOG.finest("salt      = " + ByteArrayHelper.toString(salt) + " - " + salt.length);
-				LOG.finest("pwVerif   = " + ByteArrayHelper.toString(pwVerification) + " - " + pwVerification.length);
+			int cryptoHeaderOffset = zipEntry.getOffset() - cde.getCryptoHeaderLength(); //18
+
+
+			/*#1 Salt */
+			//salt sie 4 bytes
+			int saltSize = raFile.readInt(cryptoHeaderOffset);
+			byte[] salt = raFile.readByteArray(cryptoHeaderOffset+4, saltSize);
+
+			/*#1 pwVerification 2 bytes */
+			byte[] pwVerification = raFile.readByteArray(cryptoHeaderOffset + 4 + saltSize, 2);
+
+			if (LOG.isLoggable(Level.FINE)) {
+//				LOG.fine("\n" + cde.toString());
+			//	LOG.fine("offset    = " + zipEntry.getOffset());
+			//	LOG.fine("cryptoOff = " + cryptoHeaderOffset);
+			//	LOG.fine("password  = " + password + " - len:" + password.length());
+				LOG.fine("salt/paramSpec      = " + ByteArrayHelper.toString(salt) + " - len: " + salt.length);
+				LOG.fine("pwVerif   = " + ByteArrayHelper.toString(pwVerification) + " - len:" + pwVerification.length);
 			}
 			// encrypter throws ZipException for wrong password
 			decrypter.init(password, 256, salt, pwVerification);
 
+			/*#3 data */
 			bos = new ByteArrayOutputStream(bufferSize);
 			ExtZipOutputStream zos = new ExtZipOutputStream(bos);
 			ExtZipEntry tmpEntry = new ExtZipEntry(zipEntry);
 			tmpEntry.setPrimaryCompressionMethod(zipEntry.getMethod());
 			tmpEntry.setCompressedSize(zipEntry.getEncryptedDataSize());
 			zos.putNextEntry(tmpEntry);
-			raFile.seek(cde.getOffset());
+
+			raFile.seek(cde.getOffset() );
+
 			byte[] buffer = new byte[bufferSize];
 			CRC32 crc32 = new CRC32();
 			int remaining = (int) zipEntry.getEncryptedDataSize();
@@ -364,6 +381,9 @@ public class AesZipFileDecrypter implements ZipConstants {
 			}
 			tmpEntry.setCrc(crc32.getValue());
 			zos.finish();
+
+
+			/*#3 finalAuthentication */
 			byte[] storedMac = new byte[10];
 			raFile.readByteArray(storedMac, 10);
 			byte[] calcMac = decrypter.getFinalAuthentication();

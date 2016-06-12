@@ -229,7 +229,7 @@ public class CentralDirectoryEntry implements ZipConstants {
 	/** fixed 256 key size, 16 bytes salt + 2 bytes pwVerification */
 	public short getCryptoHeaderLength() {
 		// TODO support 128+192 byte keys reduces the salt byte size to 8+2 or 12+2
-		return 18;
+		return 18+4;
 	}
 
 	public boolean isAesEncrypted() {

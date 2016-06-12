@@ -1040,5 +1040,9 @@ public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncrypt
 
 	}
 
+	public SecretKey getKey() {
+		return this.key;
+	}
+
 }
 

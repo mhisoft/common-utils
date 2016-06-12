@@ -25,6 +25,10 @@ package org.mhisoft.common.zip.impl;
 
 import java.util.zip.ZipException;
 
+import java.io.IOException;
+
+import org.mhisoft.common.util.Encryptor;
+
 /**
  * Description:
  *
@@ -32,24 +36,40 @@ import java.util.zip.ZipException;
  * @since Jun, 2016
  */
 public class AESStandardPBEByteEncryptor implements AESEncrypter {
+	Encryptor encryptor ;
+	public static final int keySize = 256;
+
 	@Override
 	public void init(String pwStr, int keySize) throws ZipException {
-
+		encryptor = new Encryptor(pwStr);
 	}
 
 	@Override
 	public void encrypt(byte[] in, int length) {
-
+		encryptor.encrypt(in);
 	}
 
 	@Override
 	public byte[] getSalt() {
-		return new byte[0];
+		try {
+			return encryptor.getCipherParameters();
+		} catch (IOException e) {
+			throw new RuntimeException("getSalt() failed", e);
+		}
+
+
 	}
 
+	//two bytes
 	@Override
 	public byte[] getPwVerification() {
-		return new byte[0];
+
+		byte[] passwordVerifier = new byte[2];
+		byte[] keyBytes = encryptor.getKey().getEncoded();
+
+		System.arraycopy(keyBytes, 2 * (keySize / 8), passwordVerifier, 0, 2);
+		return passwordVerifier;
+
 	}
 
 	@Override

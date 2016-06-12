@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Test;
+import org.mhisoft.common.util.FileUtils;
 import org.mhisoft.common.zip.api.AesZipFileDecrypter;
 import org.mhisoft.common.zip.api.AesZipFileEncrypter;
 import org.mhisoft.common.zip.impl.AESDecrypter;
@@ -49,7 +50,7 @@ public class ZipfileEncryptorTest {
 	private static final Logger LOG = Logger.getLogger(ZipfileEncryptorTest.class.getName());
 
 	@Test
-	public void generalTest() {
+	public void aesEncrypterJCAZipAndUnZipTest() {
 
 		     /*encrypt*/
 
@@ -58,14 +59,18 @@ public class ZipfileEncryptorTest {
 				String password ="testTest1244";
 
 				InputStream in = this.getClass().getClassLoader().getResourceAsStream("ZipfileEncryptorTest.docx");
+				InputStream file2 = this.getClass().getClassLoader().getResourceAsStream("test1.txt");
 				File zipFile = new File("ZipfileEncryptorTest.zip");
 
 				AesZipFileEncrypter enc = new AesZipFileEncrypter(zipFile , encrypter);
 				try {
 					enc.add("ZipfileEncryptorTest.docx", in, password);
+					enc.add("test1.txt", file2, password);
 				} finally {
 					enc.close();
 				}
+
+
 
 
 				/*decrypt*/
@@ -75,7 +80,8 @@ public class ZipfileEncryptorTest {
 				List<ExtZipEntry> entries = aesZipFileDecrypter.getEntryList();
 				for (ExtZipEntry entry : entries) {
 					LOG.info( "entry name:" + entry.getName());
-					aesZipFileDecrypter.extractEntry(entry, new File (entry.getName()), password);
+					String[] tokens = FileUtils.splitFileParts(entry.getName());
+					aesZipFileDecrypter.extractEntry(entry, new File (tokens[0]+tokens[1]+"-unzipped."+tokens[2]), password);
 				}
 
 			} catch (IOException | DataFormatException e) {
