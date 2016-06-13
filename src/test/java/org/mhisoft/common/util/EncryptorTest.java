@@ -47,14 +47,15 @@ public class EncryptorTest {
 
 			String s1 = "1.FooBar 23974034 &&^23 时尚 ~!)\\u";
 			String s2 = "2.FooBar 2397 时尚 ~!)\\u";
-			byte[] enc = encryptor.encrypt(StringUtils.getBytes(s1));
+			Encryptor.EncryptionResult ret = encryptor.encrypt(StringUtils.getBytes(s1));
+			byte[] enc = ret.getEncryptedData();
 
 			System.out.println(StringUtils.toHexString(enc));
 
 			byte[] byteItem = FileUtils.padByteArray(enc, FIXED_RECORD_LENGTH);
 			byte[] enc1_2 = FileUtils.trimByteArray(byteItem);
 
-			byte[] params = encryptor.getCipherParameters();
+			byte[] params = ret.getCipherParameters();
 
 
 			//decrypt using a new instance of encryptor.
@@ -70,7 +71,8 @@ public class EncryptorTest {
 
 
 			//again, salt is changed.
-			byte[] enc2 = encryptor.encrypt(StringUtils.getBytes(s2));
+			ret = encryptor.encrypt(StringUtils.getBytes(s2));
+			byte[] enc2 = ret.getEncryptedData();
 
 			//decrypt using a new instance of encryptor.
 			byte[] params2  = encryptor.getCipherParameters();
@@ -101,7 +103,8 @@ public class EncryptorTest {
 
 
 				Encryptor encryptor = new Encryptor(passBase+i);
-				byte[] encText = encryptor.encrypt( StringUtils.getBytes(s2+ Integer.valueOf(i) )  ) ;
+				Encryptor.EncryptionResult ret  = encryptor.encrypt( StringUtils.getBytes(s2+ Integer.valueOf(i) )  ) ;
+				byte[] encText = ret.getEncryptedData();
 				System.out.println(StringUtils.toHexString(encText));
 
 				byte[] params = encryptor.getCipherParameters();

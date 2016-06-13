@@ -26,7 +26,10 @@ package org.mhisoft.common.zip.impl;
 import java.util.Arrays;
 import java.util.zip.ZipException;
 import java.io.IOException;
+import java.security.AlgorithmParameters;
+import java.security.NoSuchAlgorithmException;
 
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.mhisoft.common.util.Encryptor;
 
 /**
@@ -35,55 +38,32 @@ import org.mhisoft.common.util.Encryptor;
  * @author Tony Xue
  * @since Jun, 2016
  */
-public class AESStandardPBEByteEncryptor implements AESEncrypter, CiperParam {
-
-	//public static final int keySize = 256;
-
-	private Encryptor encryptor;
-	private byte[] cipherParameters;
+public class AESStandardPBEByteDecryptor implements AESDecrypter, CiperParam {
+	Encryptor encryptor;
+	//AlgorithmParameters  algorithmParameters;
 
 	@Override
-	public void init(String pwStr, int keySize) throws ZipException {
-		encryptor = new Encryptor(pwStr);
+	public void init(String pwStr, int keySize, byte[] saltOrCiperParameter, byte[] pwVerification) throws ZipException {
+		this.encryptor = new Encryptor(pwStr);
+	}
+
+	public int getSaltOrCiperParameterLength() throws IOException {
+//		if (algorithmParameters==null)
+//			return 104;
+//		return algorithmParameters.getEncoded().length; //100
+		return 100;
 	}
 
 	@Override
-	public byte[] encrypt(byte[] in, int length) {
+	public byte[] decrypt(byte[] in, int length, byte[] ciperParams)  throws EncryptionOperationNotPossibleException {
 		try {
-			this.cipherParameters = null;
-			Encryptor.EncryptionResult ret = encryptor.encrypt(in);
-			this.cipherParameters = encryptor.getCipherParameters();
-			return ret.getEncryptedData();
-		} catch (IOException e) {
-			throw new RuntimeException("getCipherParameters() failed", e);
+			AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(Encryptor.ALGORITHM);
+			algorithmParameters.init(ciperParams);
+			return encryptor.decrypt(in, algorithmParameters);
+		} catch (NoSuchAlgorithmException | IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-
-	}
-
-	@Override
-	public byte[] getSalt() {
-		return null;
-	}
-
-
-	/**
-	 * Call this only after the encrypt() method because each encrypt methods will change the
-	 * Cipher parameters.
-	 *
-	 * @return
-	 */
-	@Override
-	public byte[] getCipherParameters() {
-		return this.cipherParameters;
-	}
-
-
-	//two bytes
-	@Override
-	public byte[] getPwVerification() {
-		byte[] passwordVerifier = new byte[2];
-		Arrays.fill(passwordVerifier, (byte) 0x10);
-		return passwordVerifier;
 	}
 
 	@Override
@@ -93,13 +73,4 @@ public class AESStandardPBEByteEncryptor implements AESEncrypter, CiperParam {
 		Arrays.fill(auth, (byte) 0x10);
 		return auth;
 	}
-
-	@Override
-	public int getSaltOrCiperParameterLength() throws IOException {
-		if (encryptor.getCipherParameters() == null)
-			return 100;
-		return encryptor.getCipherParameters().length; //100
-	}
-
-
 }

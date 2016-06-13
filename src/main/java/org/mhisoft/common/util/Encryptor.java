@@ -26,8 +26,6 @@ package org.mhisoft.common.util;
 import java.io.IOException;
 import java.security.AlgorithmParameters;
 
-import javax.crypto.SecretKey;
-
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.salt.RandomSaltGenerator;
 
@@ -86,6 +84,7 @@ public class Encryptor {
 
 	/**
 	 * Get and save the params after the encryption. It has random salt and IvParameterSpec
+	 * Call this only after encrypt()
 	 * @return
 	 * @throws IOException
 	 */
@@ -94,9 +93,20 @@ public class Encryptor {
 	}
 
 
-	public byte[] encrypt(byte[] input) throws EncryptionOperationNotPossibleException {
-		byte[] enc = encryptor.encrypt(input);
-		return enc;
+//	public byte[] encrypt(byte[] input) throws EncryptionOperationNotPossibleException {
+//		byte[] enc = encryptor.encrypt(input);
+//		return enc;
+//	}
+
+	public EncryptionResult encrypt(final byte[] input) throws EncryptionOperationNotPossibleException {
+		EncryptionResult ret=null;
+		try {
+			ret = new EncryptionResult(encryptor.encrypt(input));
+			ret.setCipherParameters(encryptor.getCipherParameters());
+		} catch (IOException e) {
+			throw new RuntimeException("encrypt()failed", e);
+		}
+		return ret;
 	}
 
 	public byte[] decrypt(byte[] input, AlgorithmParameters algorithmParameters) throws EncryptionOperationNotPossibleException {
@@ -117,9 +127,31 @@ public class Encryptor {
 		}
 	}
 
-	public SecretKey getKey() {
-		return encryptor.getKey();
+	public static class EncryptionResult {
+		byte[] encryptedData;
+		byte[] cipherParameters;
+
+		public EncryptionResult(byte[] encryptedData) {
+			this.encryptedData = encryptedData;
+		}
+
+		public byte[] getEncryptedData() {
+			return encryptedData;
+		}
+
+		public void setEncryptedData(byte[] encryptedData) {
+			this.encryptedData = encryptedData;
+		}
+
+		public byte[] getCipherParameters() {
+			return cipherParameters;
+		}
+
+		public void setCipherParameters(byte[] cipherParameters) {
+			this.cipherParameters = cipherParameters;
+		}
 	}
+
 
 
 

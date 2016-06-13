@@ -139,9 +139,10 @@ public class ExtZipEntry extends ZipEntry {
 	 * 
 	 * @return data size only
 	 */
-	public long getEncryptedDataSize() {
+	public long getEncryptedDataSize(CiperParam ciperParam) {
 		// authentication (10), salt (16), verification (2)
-		return getCompressedSize() - 10 - 16 - 2;
+		//return getCompressedSize() - 10 - 16 - 2;
+		return getCompressedSize() - centralDirectoryEntry.getCryptoHeaderTotalLength(ciperParam);
 	}
 
 	public CentralDirectoryEntry getCentralDirectoryEntry() {

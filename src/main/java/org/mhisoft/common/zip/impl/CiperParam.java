@@ -23,26 +23,15 @@
 
 package org.mhisoft.common.zip.impl;
 
-import java.util.zip.ZipException;
+import java.io.IOException;
 
 /**
- * Encrypt.
+ * Description:
  *
- * @author olaf@merkert.de
+ * @author Tony Xue
+ * @since Jun, 2016
  */
-public interface AESEncrypter {
+public interface CiperParam {
 
-	public void init(String pwStr, int keySize) throws ZipException;
-
-	public byte[] encrypt(byte[] in, int length);
-
-	public byte[] getSalt();
-
-	public byte[] getPwVerification();
-
-	public byte[] getFinalAuthentication();
-
-	public byte[] getCipherParameters();
-
-
+	public int getSaltOrCiperParameterLength() throws IOException;
 }

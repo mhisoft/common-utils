@@ -38,6 +38,8 @@ import org.mhisoft.common.zip.impl.AESDecrypter;
 import org.mhisoft.common.zip.impl.AESDecrypterJCA;
 import org.mhisoft.common.zip.impl.AESEncrypter;
 import org.mhisoft.common.zip.impl.AESEncrypterJCA;
+import org.mhisoft.common.zip.impl.AESStandardPBEByteDecryptor;
+import org.mhisoft.common.zip.impl.AESStandardPBEByteEncryptor;
 import org.mhisoft.common.zip.impl.ExtZipEntry;
 
 /**
@@ -55,6 +57,14 @@ public class ZipfileEncryptorTest {
 		     /*encrypt*/
 
 			try {
+
+				try {
+					File f = new File("ZipfileEncryptorTest.zip");
+					f.delete();
+				} catch (Exception e) {
+//					/
+				}
+
 				AESEncrypter encrypter = new AESEncrypterJCA();
 				String password ="testTest1244";
 
@@ -64,7 +74,57 @@ public class ZipfileEncryptorTest {
 
 				AesZipFileEncrypter enc = new AesZipFileEncrypter(zipFile , encrypter);
 				try {
-					enc.add("ZipfileEncryptorTest.docx", in, password);
+					//enc.add("ZipfileEncryptorTest.docx", in, password);
+					enc.add("test1.txt", file2, password);
+				} finally {
+					enc.close();
+
+				}
+
+
+
+
+				/*decrypt*/
+
+				AESDecrypter decrypter = new AESDecrypterJCA();
+				AesZipFileDecrypter aesZipFileDecrypter = new AesZipFileDecrypter(zipFile, decrypter);
+				List<ExtZipEntry> entries = aesZipFileDecrypter.getEntryList();
+				for (ExtZipEntry entry : entries) {
+					LOG.info( "entry name:" + entry.getName());
+					String[] tokens = FileUtils.splitFileParts(entry.getName());
+					aesZipFileDecrypter.extractEntry(entry, new File (tokens[0]+tokens[1]+"-unzipped."+tokens[2]), password);
+				}
+
+			} catch (IOException | DataFormatException e) {
+				e.printStackTrace();
+			}
+
+
+	}
+
+	@Test
+	public void aesStandardPBEZipAndUnZipTest() {
+
+		     /*encrypt*/
+
+			try {
+
+				try {
+					File f = new File("ZipfileEncryptorTest.zip");
+					f.delete();
+				} catch (Exception e) {
+//					/
+				}
+				AESEncrypter encrypter = new AESStandardPBEByteEncryptor();
+				String password ="testTest1244";
+
+				InputStream in = this.getClass().getClassLoader().getResourceAsStream("ZipfileEncryptorTest.docx");
+				InputStream file2 = this.getClass().getClassLoader().getResourceAsStream("test1.txt");
+				File zipFile = new File("ZipfileEncryptorTest.zip");
+
+				AesZipFileEncrypter enc = new AesZipFileEncrypter(zipFile , encrypter);
+				try {
+					//enc.add("ZipfileEncryptorTest.docx", in, password);
 					enc.add("test1.txt", file2, password);
 				} finally {
 					enc.close();
@@ -75,7 +135,7 @@ public class ZipfileEncryptorTest {
 
 				/*decrypt*/
 
-				AESDecrypter decrypter = new AESDecrypterJCA();
+				AESDecrypter decrypter = new AESStandardPBEByteDecryptor();
 				AesZipFileDecrypter aesZipFileDecrypter = new AesZipFileDecrypter(zipFile, decrypter);
 				List<ExtZipEntry> entries = aesZipFileDecrypter.getEntryList();
 				for (ExtZipEntry entry : entries) {

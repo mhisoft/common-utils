@@ -23,6 +23,7 @@
 package org.mhisoft.common.zip.impl;
 
 import java.util.Random;
+import java.io.IOException;
 import java.security.SecureRandom;
 
 /**
@@ -30,7 +31,7 @@ import java.security.SecureRandom;
  *
  * @author Matthew Dempsky <mdempsky@google.com>
  */
-public class AESEncrypterJCA implements AESEncrypter {
+public class AESEncrypterJCA implements AESEncrypter, CiperParam {
 
 	private byte[] salt;
 	private AESUtilsJCA utils;
@@ -41,9 +42,10 @@ public class AESEncrypterJCA implements AESEncrypter {
 	}
 
 	@Override
-	public void encrypt(byte[] in, int length) {
+	public byte[] encrypt(byte[] in, int length) {
 		utils.cryptUpdate(in, length);
 		utils.authUpdate(in, length);
+		return in;
 	}
 
 	@Override
@@ -69,4 +71,13 @@ public class AESEncrypterJCA implements AESEncrypter {
 		return salt;
 	}
 
+
+	@Override
+	public byte[] getCipherParameters() {
+		return null;
+	}
+
+	public int getSaltOrCiperParameterLength() throws IOException {
+		return salt.length;
+	}
 }

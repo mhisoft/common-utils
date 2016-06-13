@@ -24,13 +24,14 @@ package org.mhisoft.common.zip.impl;
 
 import java.util.Arrays;
 import java.util.zip.ZipException;
+import java.io.IOException;
 
 /**
  * Decrypter adapter for the Java Cryptography Architecture.
  *
  * @author Matthew Dempsky <mdempsky@google.com>
  */
-public class AESDecrypterJCA implements AESDecrypter {
+public class AESDecrypterJCA implements AESDecrypter, CiperParam {
 
 	private AESUtilsJCA utils;
 
@@ -41,13 +42,19 @@ public class AESDecrypterJCA implements AESDecrypter {
 	}
 
 	@Override
-	public void decrypt(byte[] in, int length) {
+	public byte[] decrypt(byte[] in, int length, byte[] ciperParams) {
 		utils.authUpdate(in, length);
 		utils.cryptUpdate(in, length);
+		return in;
 	}
 
 	@Override
 	public byte[] getFinalAuthentication() {
 		return utils.getFinalAuthentifier();
 	}
+
+	public int getSaltOrCiperParameterLength() throws IOException {
+		return 16;
+	}
+
 }
