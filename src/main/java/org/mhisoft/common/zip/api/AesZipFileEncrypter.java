@@ -43,6 +43,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.mhisoft.common.zip.impl.AESEncrypter;
 import org.mhisoft.common.zip.impl.ByteArrayHelper;
+import org.mhisoft.common.zip.impl.CentralDirectoryEntry;
 import org.mhisoft.common.zip.impl.CiperParam;
 import org.mhisoft.common.zip.impl.ExtZipEntry;
 import org.mhisoft.common.zip.impl.ExtZipOutputStream;
@@ -238,20 +239,15 @@ public class AesZipFileEncrypter {
 
 		//header total Length.
 		//entry.getEncryptedDataSize()
-		int cryptoHeaderSize = 4+ ((CiperParam)encrypter).getSaltOrCiperParameterLength() + 2+10;
-
-		//entry.setCompressedSize(data.length + saltOrParamSpec.length+2+10+4);
-
-
+		int cryptoHeaderSize = CentralDirectoryEntry.getCryptoHeaderTotalLength((CiperParam)encrypter);//4+ ((CiperParam)encrypter).getSaltOrCiperParameterLength() + 2+10;
 
 		entry.setCompressedSize(encryptedData.length + cryptoHeaderSize);
+
 		LOG.fine("setCompressedSize:" + encryptedData.length + cryptoHeaderSize );
 		LOG.fine(" data len = " + data.length );
 		LOG.fine(" data = " + ByteArrayHelper.toString(data)  );
 		LOG.fine(" encryptedData len = " + encryptedData.length );
 		LOG.fine(" encryptedData = " + ByteArrayHelper.toString(encryptedData)  );
-
-
 
 
 		entry.setTime((new java.util.Date()).getTime());
@@ -260,7 +256,8 @@ public class AesZipFileEncrypter {
 		zipOS.putNextEntry(entry);
 		/*
 		// ZIP-file data contains:
-		// 1. salt or paramSpec size and and salt/paramSpec   size 16/100 bytes
+		// 1. salt or paramSpec size 4 bytes
+				and and salt/paramSpec   size 16/100 bytes
 		// 2. pwVerification  size 2 bytes
 		// 3. encryptedContent  data.length
 		// 4. authenticationCode  ,10 bytes
@@ -278,19 +275,11 @@ public class AesZipFileEncrypter {
 
 		zipOS.writeBytes(encryptedData, 0, encryptedData.length);
 
-		//4. authenticationCode
+		/*4. authenticationCode*/
 		byte[] finalAuthentication = encrypter.getFinalAuthentication();
-//		if (LOG.isLoggable(Level.FINE)) {
-//			LOG.fine("finalAuthentication=" + Arrays.toString(finalAuthentication) + " at pos="
-//					+ zipOS.getWritten());
-//		}
 
 		zipOS.writeBytes(finalAuthentication);
 
-//		//test
-//		AESStandardPBEByteDecryptor decryptor = new AESStandardPBEByteDecryptor();
-//		decryptor.init(password, 256, encrypter.getCipherParameters() , finalAuthentication);
-//		byte[] _data2 = decryptor.decrypt(encryptedData, encryptedData.length);
 
 		if (LOG.isLoggable(Level.FINE)) {
 

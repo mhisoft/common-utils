@@ -40,7 +40,6 @@ import org.mhisoft.common.util.Encryptor;
  */
 public class AESStandardPBEByteDecryptor implements AESDecrypter, CiperParam {
 	Encryptor encryptor;
-	//AlgorithmParameters  algorithmParameters;
 
 	@Override
 	public void init(String pwStr, int keySize, byte[] saltOrCiperParameter, byte[] pwVerification) throws ZipException {

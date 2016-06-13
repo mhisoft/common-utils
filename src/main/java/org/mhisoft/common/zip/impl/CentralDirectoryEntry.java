@@ -227,7 +227,7 @@ public class CentralDirectoryEntry implements ZipConstants {
 	}
 
 
-	public int getHeaderSaltOrCiperParameterLength(CiperParam ciperParam) {
+	public static  int  getHeaderSaltOrCiperParameterLength(CiperParam ciperParam) {
 		try {
 			return 4 + ciperParam.getSaltOrCiperParameterLength();  //16,104
 		} catch (IOException e) {
@@ -238,14 +238,14 @@ public class CentralDirectoryEntry implements ZipConstants {
 	/**
 	 * fixed 256 key size, 16 bytes salt + 2 bytes pwVerification
 	 */
-	public int getCryptoHeaderLengthBeforeData(CiperParam ciperParam) {
+	public static int  getCryptoHeaderLengthBeforeData(CiperParam ciperParam) {
 		// TODO support 128+192 byte keys reduces the salt byte size to 8+2 or 12+2
 		int cryptoHeaderLength = getHeaderSaltOrCiperParameterLength(ciperParam) + 2;
 		return cryptoHeaderLength;
 		//return 18+4;
 	}
 
-	public int  getCryptoHeaderTotalLength(CiperParam ciperParam) {
+	public static int  getCryptoHeaderTotalLength(CiperParam ciperParam) {
 		  return getCryptoHeaderLengthBeforeData(ciperParam)+ 10; //add authentication code 10 bytes
 	}
 
