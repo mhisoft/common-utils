@@ -28,9 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import static org.mhisoft.common.zip.impl.ByteArrayHelper.toLong;
-import static org.mhisoft.common.zip.impl.ByteArrayHelper.toShort;
-import static org.mhisoft.common.zip.impl.ByteArrayHelper.toInt;
+import static org.mhisoft.common.util.ByteArrayHelper.toLong;
+import static org.mhisoft.common.util.ByteArrayHelper.toShort;
+import static org.mhisoft.common.util.ByteArrayHelper.toInt;
 
 
 /**

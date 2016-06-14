@@ -29,6 +29,8 @@ import java.util.zip.ZipEntry;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.mhisoft.common.util.ByteArrayHelper;
+
 /**
  * Provide InputStream access to <b>compressed data</b> from one ZipEntry contained
  * within one ZipFile. Necessary as java.util.zip.ZipInputStream only provides access to

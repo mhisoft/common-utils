@@ -42,7 +42,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.mhisoft.common.zip.impl.AESEncrypter;
-import org.mhisoft.common.zip.impl.ByteArrayHelper;
+import org.mhisoft.common.util.ByteArrayHelper;
 import org.mhisoft.common.zip.impl.CentralDirectoryEntry;
 import org.mhisoft.common.zip.impl.CiperParam;
 import org.mhisoft.common.zip.impl.ExtZipEntry;

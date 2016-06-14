@@ -23,11 +23,13 @@
 
 package org.mhisoft.common.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -51,6 +53,30 @@ public class FileUtils {
 	public static byte[] readFile(final String pathToFile) throws IOException {
 		byte[] array = Files.readAllBytes(new File(pathToFile).toPath());
 		return array;
+	}
+
+
+	/**
+	 * Read the inputstream to a byte array.
+	 * @param is
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] readFile(InputStream is) throws IOException {
+
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+		int nRead;
+		byte[] data = new byte[16384];
+
+		while ((nRead = is.read(data, 0, data.length)) != -1)
+		{
+			buffer.write(data, 0, nRead);
+		}
+
+		buffer.flush();
+
+		return buffer.toByteArray();
 	}
 
 
@@ -197,16 +223,17 @@ public class FileUtils {
 
 	/**
 	 * Splut the file with full patch into three tokens. 1. dir, 2.filename, 3. extension
+	 *
 	 * @param fileWithPath
 	 * @return
 	 */
-	public  static String[] splitFileParts(final String fileWithPath) {
+	public static String[] splitFileParts(final String fileWithPath) {
 
 		String[] ret = new String[3];
 		int k = fileWithPath.lastIndexOf(File.separator);
 		String dir = "";
-		String fileName="";
-		String fileExt="";
+		String fileName = "";
+		String fileExt = "";
 		if (k > -1) {
 			dir = fileWithPath.substring(0, k);                         // no slash at the end
 			fileName = fileWithPath.substring(k + 1, fileWithPath.length());

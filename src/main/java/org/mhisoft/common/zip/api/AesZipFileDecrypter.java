@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.mhisoft.common.zip.impl.AESDecrypter;
-import org.mhisoft.common.zip.impl.ByteArrayHelper;
+import org.mhisoft.common.util.ByteArrayHelper;
 import org.mhisoft.common.zip.impl.CentralDirectoryEntry;
 import org.mhisoft.common.zip.impl.CiperParam;
 import org.mhisoft.common.zip.impl.ExtRandomAccessFile;

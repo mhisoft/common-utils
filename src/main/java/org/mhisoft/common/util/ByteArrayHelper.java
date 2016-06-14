@@ -21,7 +21,7 @@
  *
  */
 
-package org.mhisoft.common.zip.impl;
+package org.mhisoft.common.util;
 
 /**
  * byte[] functionality

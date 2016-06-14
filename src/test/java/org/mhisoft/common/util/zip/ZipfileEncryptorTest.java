@@ -23,6 +23,7 @@
 
 package org.mhisoft.common.util.zip;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -41,6 +42,8 @@ import org.mhisoft.common.zip.impl.AESEncrypterJCA;
 import org.mhisoft.common.zip.impl.AESStandardPBEByteDecryptor;
 import org.mhisoft.common.zip.impl.AESStandardPBEByteEncryptor;
 import org.mhisoft.common.zip.impl.ExtZipEntry;
+
+import junit.framework.Assert;
 
 /**
  * Description:  ZipfileEncryptorTest
@@ -74,8 +77,8 @@ public class ZipfileEncryptorTest {
 
 				AesZipFileEncrypter enc = new AesZipFileEncrypter(zipFile , encrypter);
 				try {
-					//enc.add("ZipfileEncryptorTest.docx", in, password);
 					enc.add("test1.txt", file2, password);
+					enc.add("ZipfileEncryptorTest.docx", in, password);
 				} finally {
 					enc.close();
 
@@ -118,17 +121,18 @@ public class ZipfileEncryptorTest {
 				AESEncrypter encrypter = new AESStandardPBEByteEncryptor();
 				String password ="testTest1244";
 
-				InputStream in = this.getClass().getClassLoader().getResourceAsStream("ZipfileEncryptorTest.docx");
+				InputStream file1 = this.getClass().getClassLoader().getResourceAsStream("ZipfileEncryptorTest.docx");
 				InputStream file2 = this.getClass().getClassLoader().getResourceAsStream("test1.txt");
 				File zipFile = new File("ZipfileEncryptorTest.zip");
 
 				AesZipFileEncrypter enc = new AesZipFileEncrypter(zipFile , encrypter);
 				try {
-					//enc.add("ZipfileEncryptorTest.docx", in, password);
 					enc.add("test1.txt", file2, password);
+					enc.add("ZipfileEncryptorTest.docx", file1, password);
 				} finally {
 					enc.close();
 				}
+
 
 
 
@@ -141,8 +145,17 @@ public class ZipfileEncryptorTest {
 				for (ExtZipEntry entry : entries) {
 					LOG.info( "entry name:" + entry.getName());
 					String[] tokens = FileUtils.splitFileParts(entry.getName());
-					aesZipFileDecrypter.extractEntry(entry, new File (tokens[0]+tokens[1]+"-unzipped."+tokens[2]), password);
+					String newFN = tokens[0]+tokens[1]+"-unzipped."+tokens[2];
+					aesZipFileDecrypter.extractEntry(entry, new File (newFN), password);
+					if  (tokens[1].equals("test1")) {
+						byte[] exploded = FileUtils.readFile(newFN);
+						InputStream file = this.getClass().getClassLoader().getResourceAsStream("test1.txt");
+						byte[] file1Bytes = FileUtils.readFile(file);
+						Assert.assertTrue(Arrays.equals(exploded,  file1Bytes));
+					}
 				}
+
+
 
 			} catch (IOException | DataFormatException e) {
 				e.printStackTrace();
