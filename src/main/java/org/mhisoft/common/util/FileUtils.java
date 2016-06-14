@@ -23,6 +23,7 @@
 
 package org.mhisoft.common.util;
 
+import java.awt.Desktop;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -42,6 +43,7 @@ import java.nio.file.Files;
  * @since Mar, 2016
  */
 public class FileUtils {
+
 
 	/**
 	 * Read the  <bold>small</bold> file into a byte array.
@@ -250,6 +252,19 @@ public class FileUtils {
 		ret[1] = fileName;
 		ret[2] = fileExt;
 		return ret;
+	}
+
+
+	public static void launchAppOpenFile(String pathToFile) {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				File myFile = new File(pathToFile);
+				Desktop.getDesktop().open(myFile);
+			} catch (IOException ex) {
+				// no application registered for PDFs
+				ex.printStackTrace();
+			}
+		}
 	}
 
 

@@ -164,4 +164,12 @@ public class ZipfileEncryptorTest {
 
 	}
 
+
+	@Test
+	public void openFile() {
+		String f = "S:\\projects\\mhisoft\\apps\\common-utils\\src\\test\\resources\\ZipfileEncryptorTest.docx";
+		FileUtils.launchAppOpenFile(f);
+
+	}
+
 }
