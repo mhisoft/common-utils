@@ -7,5 +7,5 @@ package org.mhisoft.common.event;
  * @since May, 2016
  */
 public enum EventType {
-	UserCheckInEvent, ModelChangeEvent
+	UserCheckInEvent, ModelChangeEvent, ViewModeChangeEvent
 }
