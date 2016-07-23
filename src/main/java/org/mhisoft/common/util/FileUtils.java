@@ -267,5 +267,10 @@ public class FileUtils {
 		}
 	}
 
+	public static boolean fileExists(final String fname) {
+		File f = new File(fname);
+		return  (f.isFile() && f.exists()) ;
+	}
+
 
 }
