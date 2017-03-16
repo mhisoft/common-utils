@@ -26,13 +26,13 @@ package org.mhisoft.common.util;
 import java.awt.Desktop;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 
@@ -90,19 +90,6 @@ public class FileUtils {
 	}
 
 
-	public static int byteArrayToInt(byte[] b) {
-		final ByteBuffer bb = ByteBuffer.wrap(b);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		return bb.getInt();
-	}
-
-	public static byte[] intToByteArray(int i) {
-		final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		bb.putInt(i);
-		return bb.array();
-	}
-
 
 	/**
 	 * Pad to total length with zeros at the end.
@@ -148,13 +135,15 @@ public class FileUtils {
 	 * @return
 	 * @throws IOException
 	 */
+
+	//use the DataOutputStream to read/wirte int.
 	public static int readInt(FileInputStream fileInputStream) throws IOException {
 		byte[] bytesInt = new byte[4];
 		int readBytes = fileInputStream.read(bytesInt);
 		if (readBytes != 4)
 			throw new RuntimeException("didn't read 4 bytes for a integer");
 
-		return FileUtils.byteArrayToInt(bytesInt);
+		return ByteArrayHelper.bytesToInt(bytesInt);
 	}
 
 	private static final int BUFFER = 4096 * 16;
@@ -271,6 +260,39 @@ public class FileUtils {
 	public static boolean fileExists(final String fname) {
 		File f = new File(fname);
 		return  (f.isFile() && f.exists()) ;
+	}
+
+
+	/**
+	 * Write the string to file, return the total number of bytes occupied.
+	 * @param out
+	 * @param str
+	 * @return
+	 * @throws IOException
+	 */
+	public static int writeString(DataOutputStream out, String str) throws IOException {
+		if (str==null)
+			throw new RuntimeException("input str is null");
+
+		byte[] content = StringUtils.getBytes(str);
+		//write size
+		byte[] size = ByteArrayHelper.intToBytes(content.length);
+		out.write(size);
+		out.write(content);
+		return size.length+content.length ;
+
+	}
+
+
+	public static String readString(FileInputStream fileInputStream) throws IOException  {
+		int numBytes = FileUtils.readInt(fileInputStream);
+		byte[] _byte = new byte[numBytes];
+		int readBytes = fileInputStream.read(_byte);
+		if (readBytes!=numBytes)
+			throw new RuntimeException("readString() failed, " + "read " + readBytes +" bytes only, expected to read:"+ numBytes);
+
+		return StringUtils.bytesToString(_byte);
+
 	}
 
 
