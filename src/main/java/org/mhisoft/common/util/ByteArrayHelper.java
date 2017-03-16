@@ -23,6 +23,9 @@
 
 package org.mhisoft.common.util;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 /**
  * byte[] functionality
  *
@@ -100,6 +103,39 @@ public class ByteArrayHelper {
 			}
 		}
 		return out;
+	}
+
+
+
+	public static int bytesToInt(byte[] b) {
+		final ByteBuffer bb = ByteBuffer.wrap(b);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		return bb.getInt();
+	}
+
+	public static byte[] intToBytes(int i) {
+		final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		bb.putInt(i);
+		return bb.array();
+	}
+
+	public static byte[] longToBytes(long l) {
+		byte[] result = new byte[8];
+		for (int i = 7; i >= 0; i--) {
+			result[i] = (byte)(l & 0xFF);
+			l >>= 8;
+		}
+		return result;
+	}
+
+	public static long bytesToLong(byte[] b) {
+		long result = 0;
+		for (int i = 0; i < 8; i++) {
+			result <<= 8;
+			result |= (b[i] & 0xFF);
+		}
+		return result;
 	}
 
 }
