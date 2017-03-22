@@ -32,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -295,5 +297,27 @@ public class FileUtils {
 
 	}
 
+
+	/**
+	 * Launch the URL using the default browser.
+	 * @param url
+	 */
+	public static void launchURL(String url) {
+
+		try {
+			if (Desktop.isDesktopSupported()) {
+				// Windows
+				Desktop.getDesktop().browse(new URI(url));
+			} else {
+				// Ubuntu
+				Runtime runtime = Runtime.getRuntime();
+				runtime.exec("/usr/bin/firefox -new-window " + url);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
