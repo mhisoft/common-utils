@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -62,6 +63,7 @@ public class FileUtils {
 
 	/**
 	 * Read the inputstream to a byte array.
+	 *
 	 * @param is
 	 * @return
 	 * @throws IOException
@@ -73,8 +75,7 @@ public class FileUtils {
 		int nRead;
 		byte[] data = new byte[16384];
 
-		while ((nRead = is.read(data, 0, data.length)) != -1)
-		{
+		while ((nRead = is.read(data, 0, data.length)) != -1) {
 			buffer.write(data, 0, nRead);
 		}
 
@@ -90,7 +91,6 @@ public class FileUtils {
 		System.arraycopy(b, 0, result, a.length, b.length);
 		return result;
 	}
-
 
 
 	/**
@@ -140,6 +140,15 @@ public class FileUtils {
 
 	//use the DataOutputStream to read/wirte int.
 	public static int readInt(FileInputStream fileInputStream) throws IOException {
+		byte[] bytesInt = new byte[4];
+		int readBytes = fileInputStream.read(bytesInt);
+		if (readBytes != 4)
+			throw new RuntimeException("didn't read 4 bytes for a integer");
+
+		return ByteArrayHelper.bytesToInt(bytesInt);
+	}
+
+	public static int readInt(RandomAccessFile fileInputStream) throws IOException {
 		byte[] bytesInt = new byte[4];
 		int readBytes = fileInputStream.read(bytesInt);
 		if (readBytes != 4)
@@ -261,19 +270,20 @@ public class FileUtils {
 
 	public static boolean fileExists(final String fname) {
 		File f = new File(fname);
-		return  (f.isFile() && f.exists()) ;
+		return (f.isFile() && f.exists());
 	}
 
 
 	/**
 	 * Write the string to file, return the total number of bytes occupied.
+	 *
 	 * @param out
 	 * @param str
 	 * @return
 	 * @throws IOException
 	 */
 	public static int writeString(DataOutputStream out, String str) throws IOException {
-		if (str==null)
+		if (str == null)
 			throw new RuntimeException("input str is null");
 
 		byte[] content = StringUtils.getBytes(str);
@@ -281,17 +291,28 @@ public class FileUtils {
 		byte[] size = ByteArrayHelper.intToBytes(content.length);
 		out.write(size);
 		out.write(content);
-		return size.length+content.length ;
+		return size.length + content.length;
 
 	}
 
 
-	public static String readString(FileInputStream fileInputStream) throws IOException  {
+	public static String readString(FileInputStream fileInputStream) throws IOException {
 		int numBytes = FileUtils.readInt(fileInputStream);
 		byte[] _byte = new byte[numBytes];
 		int readBytes = fileInputStream.read(_byte);
-		if (readBytes!=numBytes)
-			throw new RuntimeException("readString() failed, " + "read " + readBytes +" bytes only, expected to read:"+ numBytes);
+		if (readBytes != numBytes)
+			throw new RuntimeException("readString() failed, " + "read " + readBytes + " bytes only, expected to read:" + numBytes);
+
+		return StringUtils.bytesToString(_byte);
+
+	}
+
+	public static String readString(RandomAccessFile raFile) throws IOException {
+		int numBytes = FileUtils.readInt(raFile);
+		byte[] _byte = new byte[numBytes];
+		int readBytes = raFile.read(_byte);
+		if (readBytes != numBytes)
+			throw new RuntimeException("readString() failed, " + "read " + readBytes + " bytes only, expected to read:" + numBytes);
 
 		return StringUtils.bytesToString(_byte);
 
@@ -300,6 +321,7 @@ public class FileUtils {
 
 	/**
 	 * Launch the URL using the default browser.
+	 *
 	 * @param url
 	 */
 	public static void launchURL(String url) {
