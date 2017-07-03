@@ -114,7 +114,7 @@ public class ByteArrayHelper {
 	}
 
 	public static byte[] intToBytes(int i) {
-		final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+		final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);   //4 bytes
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		bb.putInt(i);
 		return bb.array();

@@ -62,6 +62,19 @@ public class FileUtils {
 
 
 	/**
+	 * Read the  <bold>small</bold> file into a byte array.
+	 *
+	 * @param file the  file.
+	 * @return content of the file in bytes.
+	 * @throws IOException
+	 */
+	public static byte[] readFile(final File file) throws IOException {
+		byte[] array = Files.readAllBytes(file.toPath());
+		return array;
+	}
+
+
+	/**
 	 * Read the inputstream to a byte array.
 	 *
 	 * @param is
