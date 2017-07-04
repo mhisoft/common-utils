@@ -239,6 +239,7 @@ public class FileUtils {
 
 	/**
 	 * Splut the file with full patch into three tokens. 1. dir, 2.filename, 3. extension
+	 * no slash at the end and no dots on the file ext.
 	 *
 	 * @param fileWithPath
 	 * @return

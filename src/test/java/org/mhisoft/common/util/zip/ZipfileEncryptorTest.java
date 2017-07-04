@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.mhisoft.common.util.FileUtils;
 import org.mhisoft.common.zip.api.AesZipFileDecrypter;
@@ -43,7 +44,6 @@ import org.mhisoft.common.zip.impl.AESStandardPBEByteDecryptor;
 import org.mhisoft.common.zip.impl.AESStandardPBEByteEncryptor;
 import org.mhisoft.common.zip.impl.ExtZipEntry;
 
-import junit.framework.Assert;
 
 /**
  * Description:  ZipfileEncryptorTest

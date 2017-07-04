@@ -28,9 +28,9 @@ import java.io.IOException;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import junit.framework.Assert;
 
 /**
  * Description:

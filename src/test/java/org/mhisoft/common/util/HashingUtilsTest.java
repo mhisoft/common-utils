@@ -29,10 +29,10 @@
  */
 package org.mhisoft.common.util;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import junit.framework.Assert;
 
 public class HashingUtilsTest
 {
