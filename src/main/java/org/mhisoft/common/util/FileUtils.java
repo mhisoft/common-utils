@@ -26,7 +26,7 @@ package org.mhisoft.common.util;
 import java.awt.Desktop;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.DataOutputStream;
+import java.io.DataOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -296,7 +296,7 @@ public class FileUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static int writeString(DataOutputStream out, String str) throws IOException {
+	public static int writeString(DataOutput out, String str) throws IOException {
 		if (str == null)
 			throw new RuntimeException("input str is null");
 
