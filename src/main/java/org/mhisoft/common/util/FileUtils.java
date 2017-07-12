@@ -270,6 +270,13 @@ public class FileUtils {
 	}
 
 
+	public static String getFileNameWithoutPath(String fileWithPath) {
+		String[] parts = FileUtils.splitFileParts(fileWithPath);
+		return parts[1]+"."+parts[2];
+
+	}
+
+
 	public static void launchAppOpenFile(String pathToFile) {
 		if (Desktop.isDesktopSupported()) {
 			try {

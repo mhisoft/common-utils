@@ -108,7 +108,7 @@ public class EncryptorTest {
 				System.out.println(StringUtils.toHexString(encText));
 
 				byte[] params = encryptor.getCipherParameters();
-
+				System.out.println("params:" + StringUtils.toHexString(params));
 
 				//decrypt using a new instance of encryptor.
 				AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(Encryptor.ALGORITHM);
