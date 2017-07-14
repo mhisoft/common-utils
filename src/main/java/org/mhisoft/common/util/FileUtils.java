@@ -39,6 +39,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 
+import com.googlecode.vfsjfilechooser2.VFSJFileChooser;
+import com.googlecode.vfsjfilechooser2.accessories.DefaultAccessoriesPanel;
+
 /**
  * Description:  File realted Utils
  *
@@ -103,6 +106,16 @@ public class FileUtils {
 		System.arraycopy(a, 0, result, 0, a.length);
 		System.arraycopy(b, 0, result, a.length, b.length);
 		return result;
+	}
+
+
+	public static void writeFile(final byte[] content, final String path) throws IOException {
+		FileOutputStream stream = new FileOutputStream(path);
+		try {
+			stream.write(content);
+		} finally {
+			stream.close();
+		}
 	}
 
 
@@ -245,12 +258,14 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String[] splitFileParts(final String fileWithPath) {
+		if (!StringUtils.hasValue(fileWithPath) )
+			return null;
 
 		String[] ret = new String[3];
 		int k = fileWithPath.lastIndexOf(File.separator);
-		String dir = "";
-		String fileName = "";
-		String fileExt = "";
+		String dir = null;
+		String fileName = null;
+		String fileExt = null;
 		if (k > -1) {
 			dir = fileWithPath.substring(0, k);                         // no slash at the end
 			fileName = fileWithPath.substring(k + 1, fileWithPath.length());
@@ -258,9 +273,12 @@ public class FileUtils {
 			fileName = fileWithPath;
 
 
-		String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-		fileName = tokens[0];
-		fileExt = tokens[1];
+		if (fileName.length()>0) {
+			String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
+			fileName = tokens[0];
+			if (tokens.length > 1)
+				fileExt = tokens[1];
+		}
 
 
 		ret[0] = dir;
@@ -272,7 +290,24 @@ public class FileUtils {
 
 	public static String getFileNameWithoutPath(String fileWithPath) {
 		String[] parts = FileUtils.splitFileParts(fileWithPath);
-		return parts[1]+"."+parts[2];
+				return parts[1]
+		parts[2]==null?
+						+"."+parts[2];
+
+	}
+
+	public static String gerFileDir(String fileWithPath) {
+		String[] parts = FileUtils.splitFileParts(fileWithPath);
+		return parts[0];
+
+	}
+
+	public static boolean isImageFile( String filename) {
+		String[] parts = FileUtils.splitFileParts(filename);
+		filename = filename.toLowerCase();
+		return  (parts[2].equals("png") || parts[2].equals("gif") ||parts[2].equals("jpg")
+				||parts[2].equals("jpeg")
+				);
 
 	}
 
@@ -361,6 +396,51 @@ public class FileUtils {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	/**
+	 *
+	 * @param defaultDir
+	 * @param selectionMode
+	 * @param fileHidingEnabled             If true, hidden files are not shown in the file chooser.
+	 * @param MultiSelectionEnabled
+	 * @return
+	 */
+	public static File[] chooseFiles(final File defaultDir, VFSJFileChooser.SELECTION_MODE selectionMode,
+		boolean fileHidingEnabled,
+		boolean MultiSelectionEnabled) {
+		// create a file chooser
+		final VFSJFileChooser fileChooser = new VFSJFileChooser();
+
+		// configure the file dialog
+		fileChooser.setAccessory(new DefaultAccessoriesPanel(fileChooser));
+		fileChooser.setFileHidingEnabled(fileHidingEnabled);
+		fileChooser.setMultiSelectionEnabled(MultiSelectionEnabled);
+		fileChooser.setFileSelectionMode(selectionMode);
+		if (defaultDir!=null)
+			fileChooser.setCurrentDirectory(defaultDir);
+
+		// show the file dialog
+		VFSJFileChooser.RETURN_TYPE answer = fileChooser.showOpenDialog(null);
+
+		// check if a file was selected
+		if (answer == VFSJFileChooser.RETURN_TYPE.APPROVE) {
+			File[] files ;
+			if (MultiSelectionEnabled)
+			   files = fileChooser.getSelectedFiles();
+			else {
+			    files = new File[1];
+				files[0]=fileChooser.getSelectedFile();
+			}
+
+//			// remove authentication credentials from the file path
+//			final String safeName = VFSUtils.getFriendlyName(aFileObject.toString());
+//
+//			System.out.printf("%s %s", "You selected:", safeName);
+			return files;
+		}
+		return null;
 	}
 
 }

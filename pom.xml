@@ -24,6 +24,12 @@
             <artifactId>jasypt</artifactId>
             <version>1.9.2</version>
         </dependency>
+        <!--https://github.com/fracpete/vfsjfilechooser2/releases-->
+        <dependency>
+            <groupId>com.github.fracpete</groupId>
+            <artifactId>vfsjfilechooser2</artifactId>
+            <version>0.2.7</version>
+        </dependency>
 
     </dependencies>
 
