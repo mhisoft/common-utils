@@ -41,7 +41,7 @@ public class FileUtilsTest {
 		Assert.assertEquals("test.docx", FileUtils.getFileNameWithoutPath(s));
 
 		String s2 = "S:\\projects\\mhisoft\\evault-app\\dist";
-		Assert.assertEquals("dist", FileUtils.getFileNameWithoutPath(s2));
+		Assert.assertEquals(null, FileUtils.getFileNameWithoutPath(s2));
 
 		String s3 = "S:\\projects\\mhisoft\\evault-app\\";
 		Assert.assertNull(FileUtils.getFileNameWithoutPath(s3));
@@ -53,7 +53,7 @@ public class FileUtilsTest {
 		Assert.assertEquals("S:\\projects\\mhisoft\\evault-app\\dist", FileUtils.gerFileDir(s));
 
 		String s2 = "S:\\projects\\mhisoft\\evault-app\\dist";
-		Assert.assertEquals("S:\\projects\\mhisoft\\evault-app", FileUtils.gerFileDir(s2));
+		Assert.assertEquals("S:\\projects\\mhisoft\\evault-app\\dist", FileUtils.gerFileDir(s2));
 
 		String s3 = "S:\\projects\\mhisoft\\evault-app\\";
 		Assert.assertEquals("S:\\projects\\mhisoft\\evault-app", FileUtils.gerFileDir(s3));

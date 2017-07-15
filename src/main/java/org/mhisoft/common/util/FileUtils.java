@@ -284,12 +284,29 @@ public class FileUtils {
 
 
 		ret[0] = dir;
-		ret[1] = fileName;
-		ret[2] = fileExt;
+
+		if (fileName!=null && fileExt==null) {
+			// c:/abc/dist    will be path only. do not treat dist as filename
+			ret[0] = ret[0] + File.separator + fileName;
+			ret[1] = null;
+			ret[2] = null;
+		}
+		else {
+			ret[1] = fileName;
+			ret[2] = fileExt;
+		}
+
+
 		return ret;
 	}
 
 
+	/**
+	 * Get file name portion of it.
+	 * see FileUtilsTest
+	 * @param fileWithPath
+	 * @return
+	 */
 	public static String getFileNameWithoutPath(String fileWithPath) {
 		String[] parts = FileUtils.splitFileParts(fileWithPath);
 		if (parts[2] != null)
@@ -299,6 +316,12 @@ public class FileUtils {
 
 	}
 
+	/**
+	 * Get only the path to dir
+	 * it does not end with File.separator
+	 * @param fileWithPath
+	 * @return
+	 */
 	public static String gerFileDir(String fileWithPath) {
 		String[] parts = FileUtils.splitFileParts(fileWithPath);
 		return parts[0];
@@ -306,8 +329,8 @@ public class FileUtils {
 	}
 
 	public static boolean isImageFile(String filename) {
-		String[] parts = FileUtils.splitFileParts(filename);
 		filename = filename.toLowerCase();
+		String[] parts = FileUtils.splitFileParts(filename);
 		return (parts[2].equals("png") || parts[2].equals("gif") || parts[2].equals("jpg")
 				|| parts[2].equals("jpeg")
 		);
