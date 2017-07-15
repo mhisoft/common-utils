@@ -35,7 +35,6 @@ import org.junit.Test;
 public class FileUtilsTest {
 
 
-
 	@Test
 	public void getFileNameWithoutPath() {
 		String s = "S:\\projects\\mhisoft\\evault-app\\dist\\test.docx";
@@ -45,8 +44,18 @@ public class FileUtilsTest {
 		Assert.assertEquals("dist", FileUtils.getFileNameWithoutPath(s2));
 
 		String s3 = "S:\\projects\\mhisoft\\evault-app\\";
-		Assert.assertEquals("", FileUtils.getFileNameWithoutPath(s3));
+		Assert.assertNull(FileUtils.getFileNameWithoutPath(s3));
+	}
 
+	@Test
+	public void getFileDir() {
+		String s = "S:\\projects\\mhisoft\\evault-app\\dist\\test.docx";
+		Assert.assertEquals("S:\\projects\\mhisoft\\evault-app\\dist", FileUtils.gerFileDir(s));
 
+		String s2 = "S:\\projects\\mhisoft\\evault-app\\dist";
+		Assert.assertEquals("S:\\projects\\mhisoft\\evault-app", FileUtils.gerFileDir(s2));
+
+		String s3 = "S:\\projects\\mhisoft\\evault-app\\";
+		Assert.assertEquals("S:\\projects\\mhisoft\\evault-app", FileUtils.gerFileDir(s3));
 	}
 }

@@ -258,7 +258,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String[] splitFileParts(final String fileWithPath) {
-		if (!StringUtils.hasValue(fileWithPath) )
+		if (!StringUtils.hasValue(fileWithPath))
 			return null;
 
 		String[] ret = new String[3];
@@ -273,12 +273,14 @@ public class FileUtils {
 			fileName = fileWithPath;
 
 
-		if (fileName.length()>0) {
+		if (fileName.length() > 0) {
 			String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
 			fileName = tokens[0];
 			if (tokens.length > 1)
 				fileExt = tokens[1];
 		}
+		else
+			fileName=null;
 
 
 		ret[0] = dir;
@@ -290,9 +292,10 @@ public class FileUtils {
 
 	public static String getFileNameWithoutPath(String fileWithPath) {
 		String[] parts = FileUtils.splitFileParts(fileWithPath);
-				return parts[1]
-		parts[2]==null?
-						+"."+parts[2];
+		if (parts[2] != null)
+			return (parts[1] + "." + parts[2]);
+		else
+			return parts[1];
 
 	}
 
@@ -302,12 +305,12 @@ public class FileUtils {
 
 	}
 
-	public static boolean isImageFile( String filename) {
+	public static boolean isImageFile(String filename) {
 		String[] parts = FileUtils.splitFileParts(filename);
 		filename = filename.toLowerCase();
-		return  (parts[2].equals("png") || parts[2].equals("gif") ||parts[2].equals("jpg")
-				||parts[2].equals("jpeg")
-				);
+		return (parts[2].equals("png") || parts[2].equals("gif") || parts[2].equals("jpg")
+				|| parts[2].equals("jpeg")
+		);
 
 	}
 
@@ -400,16 +403,15 @@ public class FileUtils {
 
 
 	/**
-	 *
 	 * @param defaultDir
 	 * @param selectionMode
-	 * @param fileHidingEnabled             If true, hidden files are not shown in the file chooser.
+	 * @param fileHidingEnabled     If true, hidden files are not shown in the file chooser.
 	 * @param MultiSelectionEnabled
 	 * @return
 	 */
 	public static File[] chooseFiles(final File defaultDir, VFSJFileChooser.SELECTION_MODE selectionMode,
-		boolean fileHidingEnabled,
-		boolean MultiSelectionEnabled) {
+			boolean fileHidingEnabled,
+			boolean MultiSelectionEnabled) {
 		// create a file chooser
 		final VFSJFileChooser fileChooser = new VFSJFileChooser();
 
@@ -418,7 +420,7 @@ public class FileUtils {
 		fileChooser.setFileHidingEnabled(fileHidingEnabled);
 		fileChooser.setMultiSelectionEnabled(MultiSelectionEnabled);
 		fileChooser.setFileSelectionMode(selectionMode);
-		if (defaultDir!=null)
+		if (defaultDir != null)
 			fileChooser.setCurrentDirectory(defaultDir);
 
 		// show the file dialog
@@ -426,12 +428,12 @@ public class FileUtils {
 
 		// check if a file was selected
 		if (answer == VFSJFileChooser.RETURN_TYPE.APPROVE) {
-			File[] files ;
+			File[] files;
 			if (MultiSelectionEnabled)
-			   files = fileChooser.getSelectedFiles();
+				files = fileChooser.getSelectedFiles();
 			else {
-			    files = new File[1];
-				files[0]=fileChooser.getSelectedFile();
+				files = new File[1];
+				files[0] = fileChooser.getSelectedFile();
 			}
 
 //			// remove authentication credentials from the file path
