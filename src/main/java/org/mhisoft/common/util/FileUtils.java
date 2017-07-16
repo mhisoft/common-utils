@@ -23,7 +23,10 @@
 
 package org.mhisoft.common.util;
 
+import java.util.Locale;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.DataOutput;
@@ -39,8 +42,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileType;
+
 import com.googlecode.vfsjfilechooser2.VFSJFileChooser;
 import com.googlecode.vfsjfilechooser2.accessories.DefaultAccessoriesPanel;
+import com.googlecode.vfsjfilechooser2.filechooser.AbstractVFSFileFilter;
 
 /**
  * Description:  File realted Utils
@@ -425,6 +433,82 @@ public class FileUtils {
 	}
 
 
+//
+//	public static class ImagesFilesFilter extends FilesTypeFilter
+//	{
+//
+//		public ImagesFilesFilter() {
+//			this.extensions = Arrays.asList( new String[] {"jpg", "jpeg", "png", "gif", "tiff", "ico", "doc", "docx", "xls"}  );
+//		}
+//
+//		public String getDescription()
+//		{
+//			return "Image and document Files" ;
+//		}
+//
+//	}
+
+	public static class FilesTypeFilter extends AbstractVFSFileFilter
+	{
+
+		String[] extensions;
+		public FilesTypeFilter(String... extensions) {
+			this.extensions = extensions;
+			for (int i = 0; i < extensions.length; i++) {
+				extensions[i] = extensions[i].toLowerCase(Locale.ENGLISH);
+			}
+
+		}
+
+
+		public String[] getExtensions() {
+			return extensions;
+		}
+
+		public void setExtensions(String[] extensions) {
+			if (extensions!=null)
+			this.extensions = extensions;
+			for (int i = 0; i < extensions.length; i++) {
+				extensions[i] = extensions[i].toLowerCase(Locale.ENGLISH);
+			}
+		}
+
+		public boolean accept(FileObject f)
+		{
+			try {
+				if (extensions==null || extensions.length==0)
+					return true;
+				if (f.getType()== FileType.FILE) {
+					String ext = f.getName().getExtension().toLowerCase();
+					for (String extension : extensions) {
+						if (extension.equals(ext))
+							return true;
+					}
+					return false;
+				}
+				else {
+					//directory or others
+					return true;
+				}
+			} catch (FileSystemException e) {
+				e.printStackTrace();
+				throw new  RuntimeException(e);
+			}
+		}
+
+		public String getDescription()
+		{
+			return "Select files" ;
+		}
+
+		@Override
+		public String toString()
+		{
+			return getDescription();
+		}
+	}
+
+
 	/**
 	 * @param defaultDir
 	 * @param selectionMode
@@ -433,8 +517,12 @@ public class FileUtils {
 	 * @return
 	 */
 	public static File[] chooseFiles(final File defaultDir, VFSJFileChooser.SELECTION_MODE selectionMode,
+			FilesTypeFilter filesTypeFilter,
 			boolean fileHidingEnabled,
-			boolean MultiSelectionEnabled) {
+			boolean MultiSelectionEnabled
+			,Dimension preferredSize
+			, Font newFont
+	) {
 		// create a file chooser
 		final VFSJFileChooser fileChooser = new VFSJFileChooser();
 
@@ -443,8 +531,22 @@ public class FileUtils {
 		fileChooser.setFileHidingEnabled(fileHidingEnabled);
 		fileChooser.setMultiSelectionEnabled(MultiSelectionEnabled);
 		fileChooser.setFileSelectionMode(selectionMode);
+		fileChooser.setPreferredSize(preferredSize);
+
+		//font size
+//		Font original = fileChooser.getFont();
+//		Font newFont = original.deriveFont(Float.valueOf(newFontSize));
+		fileChooser.setFont(newFont);
+		fileChooser.getDialog().setFont(newFont);
+
+		fileChooser.setFont( newFont );
+
 		if (defaultDir != null)
 			fileChooser.setCurrentDirectory(defaultDir);
+		if (filesTypeFilter!=null)
+			fileChooser.setFileFilter(filesTypeFilter);
+
+
 
 		// show the file dialog
 		VFSJFileChooser.RETURN_TYPE answer = fileChooser.showOpenDialog(null);
