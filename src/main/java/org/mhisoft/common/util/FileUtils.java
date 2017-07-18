@@ -336,6 +336,12 @@ public class FileUtils {
 
 	}
 
+	public static String gerFileExt(String fileWithPath) {
+		String[] parts = FileUtils.splitFileParts(fileWithPath);
+		return parts[2];
+
+	}
+
 	public static boolean isImageFile(String filename) {
 		filename = filename.toLowerCase();
 		String[] parts = FileUtils.splitFileParts(filename);
@@ -432,6 +438,18 @@ public class FileUtils {
 		}
 	}
 
+
+	public static void launchFile(String pathToFile) throws IOException {
+		if (Desktop.isDesktopSupported()) {
+			//try {
+				File myFile = new File( pathToFile );
+				Desktop.getDesktop().open(myFile);
+			//} catch (IOException ex) {
+				// no application registered for PDFs
+
+			//}
+		}
+	}
 
 //
 //	public static class ImagesFilesFilter extends FilesTypeFilter
