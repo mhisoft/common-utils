@@ -32,6 +32,7 @@ package org.mhisoft.common.util;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mhisoft.common.util.security.HashingUtils;
 
 
 public class HashingUtilsTest

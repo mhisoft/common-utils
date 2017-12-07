@@ -21,13 +21,14 @@
  *
  */
 
-package org.mhisoft.common.util;
+package org.mhisoft.common.util.security;
 
 import java.io.IOException;
 import java.security.AlgorithmParameters;
 
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.salt.RandomSaltGenerator;
+import org.mhisoft.common.util.StandardPBEByteEncryptor;
 
 /**
  * Description:  Does encryption and decryption
@@ -36,7 +37,7 @@ import org.jasypt.salt.RandomSaltGenerator;
  * @author Tony Xue
  * @since Mar, 2016
  */
-public class Encryptor {
+public class PBEEncryptor {
 
 	String password;
 	private StandardPBEByteEncryptor encryptor;
@@ -56,11 +57,11 @@ public class Encryptor {
 	//share a  resuable salt generator.
 	static RandomSaltGenerator saltGenerator = new RandomSaltGenerator() ;
 
-	public Encryptor() {
+	public PBEEncryptor() {
 
 	}
 
-	public Encryptor(String password) {
+	public PBEEncryptor(String password) {
 		init(password);
 	}
 

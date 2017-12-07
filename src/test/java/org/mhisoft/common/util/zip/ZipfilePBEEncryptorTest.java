@@ -51,8 +51,8 @@ import org.mhisoft.common.zip.impl.ExtZipEntry;
  * @author Tony Xue
  * @since Jun, 2016
  */
-public class ZipfileEncryptorTest {
-	private static final Logger LOG = Logger.getLogger(ZipfileEncryptorTest.class.getName());
+public class ZipfilePBEEncryptorTest {
+	private static final Logger LOG = Logger.getLogger(ZipfilePBEEncryptorTest.class.getName());
 
 	@Test
 	public void aesEncrypterJCAZipAndUnZipTest() {

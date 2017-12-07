@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.zip.ZipException;
 import java.io.IOException;
 
-import org.mhisoft.common.util.Encryptor;
+import org.mhisoft.common.util.security.PBEEncryptor;
 
 /**
  * Description:
@@ -39,19 +39,19 @@ public class AESStandardPBEByteEncryptor implements AESEncrypter, CiperParam {
 
 	//public static final int keySize = 256;
 
-	private Encryptor encryptor;
+	private PBEEncryptor encryptor;
 	private byte[] cipherParameters;
 
 	@Override
 	public void init(String pwStr, int keySize) throws ZipException {
-		encryptor = new Encryptor(pwStr);
+		encryptor = new PBEEncryptor(pwStr);
 	}
 
 	@Override
 	public byte[] encrypt(byte[] in, int length) {
 		try {
 			this.cipherParameters = null;
-			Encryptor.EncryptionResult ret = encryptor.encrypt(in);
+			PBEEncryptor.EncryptionResult ret = encryptor.encrypt(in);
 			this.cipherParameters = encryptor.getCipherParameters();
 			return ret.getEncryptedData();
 		} catch (IOException e) {

@@ -30,6 +30,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mhisoft.common.util.security.PBEEncryptor;
 
 
 /**
@@ -38,16 +39,16 @@ import org.junit.Test;
  * @author Tony Xue
  * @since Mar, 2016
  */
-public class EncryptorTest {
+public class PBEEncryptorTest {
 	static int FIXED_RECORD_LENGTH=2000;
 	@Test
 	public void testPBEEncryption() {
 		try {
-			Encryptor encryptor = new Encryptor("testpassword2343");
+			PBEEncryptor encryptor = new PBEEncryptor("testpassword2343");
 
 			String s1 = "1.FooBar 23974034 &&^23 时尚 ~!)\\u";
 			String s2 = "2.FooBar 2397 时尚 ~!)\\u";
-			Encryptor.EncryptionResult ret = encryptor.encrypt(StringUtils.getBytes(s1));
+			PBEEncryptor.EncryptionResult ret = encryptor.encrypt(StringUtils.getBytes(s1));
 			byte[] enc = ret.getEncryptedData();
 
 			System.out.println(StringUtils.toHexString(enc));
@@ -59,11 +60,11 @@ public class EncryptorTest {
 
 
 			//decrypt using a new instance of encryptor.
-			AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(Encryptor.ALGORITHM);
+			AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(PBEEncryptor.ALGORITHM);
 			algorithmParameters.init(params);
 
 
-			Encryptor encryptor2 = new Encryptor("testpassword2343");
+			PBEEncryptor encryptor2 = new PBEEncryptor("testpassword2343");
 			byte[]  dec = encryptor2.decrypt(enc1_2, algorithmParameters);
 			System.out.println(StringUtils.bytesToString(dec));
 
@@ -76,7 +77,7 @@ public class EncryptorTest {
 
 			//decrypt using a new instance of encryptor.
 			byte[] params2  = encryptor.getCipherParameters();
-			AlgorithmParameters algorithmParameters2 = AlgorithmParameters.getInstance(Encryptor.ALGORITHM);
+			AlgorithmParameters algorithmParameters2 = AlgorithmParameters.getInstance(PBEEncryptor.ALGORITHM);
 			algorithmParameters2.init(params2);
 
 			byte[]  dec2 = encryptor2.decrypt(enc2, algorithmParameters2);
@@ -102,8 +103,8 @@ public class EncryptorTest {
 				long t1 = System.currentTimeMillis();
 
 
-				Encryptor encryptor = new Encryptor(passBase+i);
-				Encryptor.EncryptionResult ret  = encryptor.encrypt( StringUtils.getBytes(s2+ Integer.valueOf(i) )  ) ;
+				PBEEncryptor encryptor = new PBEEncryptor(passBase+i);
+				PBEEncryptor.EncryptionResult ret  = encryptor.encrypt( StringUtils.getBytes(s2+ Integer.valueOf(i) )  ) ;
 				byte[] encText = ret.getEncryptedData();
 				System.out.println(StringUtils.toHexString(encText));
 
@@ -111,9 +112,9 @@ public class EncryptorTest {
 				System.out.println("params:" + StringUtils.toHexString(params));
 
 				//decrypt using a new instance of encryptor.
-				AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(Encryptor.ALGORITHM);
+				AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(PBEEncryptor.ALGORITHM);
 				algorithmParameters.init(params);
-				Encryptor decryptor = new Encryptor(passBase+i);
+				PBEEncryptor decryptor = new PBEEncryptor(passBase+i);
 				byte[]  dec = decryptor.decrypt(encText, algorithmParameters);
 				System.out.println(StringUtils.bytesToString(dec));
 

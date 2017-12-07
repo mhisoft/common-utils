@@ -30,7 +30,7 @@ import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
 
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.mhisoft.common.util.Encryptor;
+import org.mhisoft.common.util.security.PBEEncryptor;
 
 /**
  * Description:
@@ -39,11 +39,11 @@ import org.mhisoft.common.util.Encryptor;
  * @since Jun, 2016
  */
 public class AESStandardPBEByteDecryptor implements AESDecrypter, CiperParam {
-	Encryptor encryptor;
+	PBEEncryptor encryptor;
 
 	@Override
 	public void init(String pwStr, int keySize, byte[] saltOrCiperParameter, byte[] pwVerification) throws ZipException {
-		this.encryptor = new Encryptor(pwStr);
+		this.encryptor = new PBEEncryptor(pwStr);
 	}
 
 	public int getSaltOrCiperParameterLength() throws IOException {
@@ -56,7 +56,7 @@ public class AESStandardPBEByteDecryptor implements AESDecrypter, CiperParam {
 	@Override
 	public byte[] decrypt(byte[] in, int length, byte[] ciperParams)  throws EncryptionOperationNotPossibleException {
 		try {
-			AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(Encryptor.ALGORITHM);
+			AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(PBEEncryptor.ALGORITHM);
 			algorithmParameters.init(ciperParams);
 			return encryptor.decrypt(in, algorithmParameters);
 		} catch (NoSuchAlgorithmException | IOException e) {
