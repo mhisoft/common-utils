@@ -37,11 +37,7 @@ public class JceEnryptionTest {
 
 	@BeforeClass
 	public static void setup() {
-		try {
 			engine = JceEncryption.getDefaultEngine();
-		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Test
@@ -74,8 +70,8 @@ public class JceEnryptionTest {
 		String s = engine.encrypt(text);
 		System.out.println(s);
 
-		engine.initRuntime();
-		String s2= engine.encrypt(text);
+		JceEncryption engine2 = JceEncryption.createEngine();
+		String s2= engine2.encrypt(text);
 		System.out.println(s2);
 		Assert.assertNotEquals(s,s2);
 
@@ -88,7 +84,7 @@ public class JceEnryptionTest {
 		String text = "Test123!";
 		String enc1 = "Zbfi2CUsIHcv0VB3QMzDkg==";
 		try {
-			engine.decrypt(enc1);
+			System.out.println("decrypted to:"+engine.decrypt(enc1));
 			Assert.fail("YOu should not be able to decrypt.");
 		} catch (GeneralSecurityException e) {
 			//

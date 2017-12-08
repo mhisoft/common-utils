@@ -61,18 +61,38 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 	private static JceEncryption defaultEngine = null;
 
 	/**
-	 * Get the default engine using AES 256 bit key.
-	 * @param key pass in null to let it generate a random key to use.
-	 * @return
-	 * @throws GeneralSecurityException
+	 * Get a initialized  engine using default settings AES 256 bit key.
 	 */
-	public static synchronized JceEncryption getDefaultEngine() throws GeneralSecurityException {
-
-		if (defaultEngine == null) {
-			defaultEngine = new JceEncryption(DEFAULT_ALGORITHM, null);
-			defaultEngine.initRuntime();
+	public static JceEncryption getDefaultEngine() {
+		try {
+			if (defaultEngine == null) {
+				synchronized (defaultEngine) {
+					if (defaultEngine == null) {
+						defaultEngine = new JceEncryption(DEFAULT_ALGORITHM, null);
+						defaultEngine.initRuntime();
+					}
+				}
+			}
+			return defaultEngine;
+		} catch (GeneralSecurityException e) {
+			throw new RuntimeException(e);
 		}
-		return defaultEngine;
+
+	}
+
+
+	/**
+	 * Get a initialized  engine using default settings AES 256 bit key.
+	 * Every time a new engine is created, a new key is used.
+	 */
+	public static JceEncryption createEngine() {
+		try {
+			JceEncryption ret = new JceEncryption(DEFAULT_ALGORITHM, null);
+			ret.initRuntime();
+			return ret;
+		} catch (GeneralSecurityException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
@@ -129,12 +149,12 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 		final transient Key k;
 		final transient Cipher encrypter;
 		final transient Cipher decrypter;
-		transient  byte[] iv;
+		transient byte[] iv;
 		final EncryptionConfig config;
 
 
 		public EncryptionRuntime(final EncryptionConfig _config) throws GeneralSecurityException {
-			this.config =_config;
+			this.config = _config;
 			final String fullAlgorithmName = getFullAlgorithmName(config);
 			try {
 				if (config.provider == null) {
@@ -154,7 +174,7 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 				/*If you use a block-chaining mode like CBC, you need to provide an IvParameterSpec to the Cipher as well.*/
 				k = getKey(config);
 
-				iv = new byte[encrypter.getBlockSize()];	// Save the IV bytes or send it in plaintext with the encrypted data so you can decrypt the data later
+				iv = new byte[encrypter.getBlockSize()];    // Save the IV bytes or send it in plaintext with the encrypted data so you can decrypt the data later
 				SecureRandom prng = new SecureRandom();
 				prng.nextBytes(iv);
 				encrypter.init(Cipher.ENCRYPT_MODE, k, new IvParameterSpec(iv));
@@ -166,8 +186,6 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 						+ " algorithm: " + fullAlgorithmName, e);
 			}
 		}
-
-
 
 
 		private Key getKey(final EncryptionConfig config) throws InvalidKeyException, NoSuchAlgorithmException,
@@ -199,7 +217,7 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 
 		private void initIV() throws GeneralSecurityException {
 			try {
-				iv = new byte[encrypter.getBlockSize()];	// Save the IV bytes or send it in plaintext with the encrypted data so you can decrypt the data later
+				iv = new byte[encrypter.getBlockSize()];    // Save the IV bytes or send it in plaintext with the encrypted data so you can decrypt the data later
 				SecureRandom prng = new SecureRandom();
 				prng.nextBytes(iv);
 				encrypter.init(Cipher.ENCRYPT_MODE, k, new IvParameterSpec(iv));
@@ -425,12 +443,12 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 		return new CipherInputStream(is, runtime.decrypter);
 	}
 
-	public static SecretKey generateKey( ) throws NoSuchAlgorithmException, NoSuchProviderException {
+	public static SecretKey generateKey() throws NoSuchAlgorithmException, NoSuchProviderException {
 		return generateKey(null, DEFAULT_ALGORITHM, DEFAULT_KEYSIZE);
 	}
 
 
-	public static SecretKey generateKey( String provider,  String algorithm,  int keysize) throws NoSuchAlgorithmException,
+	public static SecretKey generateKey(String provider, String algorithm, int keysize) throws NoSuchAlgorithmException,
 			NoSuchProviderException {
 		KeyGenerator keyGenerator;
 		if (provider == null)
