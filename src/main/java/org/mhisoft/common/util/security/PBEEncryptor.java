@@ -28,7 +28,6 @@ import java.security.AlgorithmParameters;
 
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.salt.RandomSaltGenerator;
-import org.mhisoft.common.util.StandardPBEByteEncryptor;
 
 /**
  * Description:  Does encryption and decryption

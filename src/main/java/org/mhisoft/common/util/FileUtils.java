@@ -259,7 +259,7 @@ public class FileUtils {
 
 
 	/**
-	 * Splut the file with full patch into three tokens. 1. dir, 2.filename, 3. extension
+	 * Split the file with full patch into three tokens. 1. dir, 2.filename, 3. extension
 	 * no slash at the end and no dots on the file ext.
 	 *
 	 * @param fileWithPath
@@ -292,17 +292,20 @@ public class FileUtils {
 
 
 		ret[0] = dir;
+		ret[1] = fileName;
+		ret[2] = fileExt;
 
-		if (fileName!=null && fileExt==null) {
-			// c:/abc/dist    will be path only. do not treat dist as filename
-			ret[0] = ret[0] + File.separator + fileName;
-			ret[1] = null;
-			ret[2] = null;
-		}
-		else {
-			ret[1] = fileName;
-			ret[2] = fileExt;
-		}
+//		if (fileName!=null && fileExt==null) {
+//			// c:/abc/dist    will be path only. do not treat dist as filename
+//			//no. use c:/abc/dist/ for dir only without filename.
+//			//c:/abc/dist the file name is dist.
+//			ret[1] = fileName;
+//			ret[2] = fileExt;
+//		}
+//		else {
+//			ret[1] = fileName;
+//			ret[2] = fileExt;
+//		}
 
 
 		return ret;

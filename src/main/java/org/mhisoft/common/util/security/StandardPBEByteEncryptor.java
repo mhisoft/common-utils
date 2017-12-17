@@ -22,7 +22,7 @@
  *//*
 license see http://www.jasypt.org/license.html
  */
-package org.mhisoft.common.util;
+package org.mhisoft.common.util.security;
 
 import java.io.IOException;
 import java.security.AlgorithmParameters;
