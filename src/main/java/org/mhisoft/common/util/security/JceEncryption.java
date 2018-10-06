@@ -59,6 +59,9 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 	private EncryptionConfig config;
 	private EncryptionRuntime runtime;
 	private static JceEncryption defaultEngine = null;
+	private static Object lock = new Object();
+
+
 
 	/**
 	 * Get a initialized  engine using default settings AES 256 bit key.
@@ -66,7 +69,7 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 	public static JceEncryption getDefaultEngine() {
 		try {
 			if (defaultEngine == null) {
-				synchronized (defaultEngine) {
+				synchronized (lock) {
 					if (defaultEngine == null) {
 						defaultEngine = new JceEncryption(DEFAULT_ALGORITHM, null);
 						defaultEngine.initRuntime();
