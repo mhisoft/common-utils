@@ -36,7 +36,7 @@ import org.jasypt.salt.RandomSaltGenerator;
  * @author Tony Xue
  * @since Mar, 2016
  */
-public class PBEEncryptor {
+public final class PBEEncryptor {
 
 	String password;
 	private StandardPBEByteEncryptor encryptor;

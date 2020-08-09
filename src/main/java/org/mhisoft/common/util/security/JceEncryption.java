@@ -46,7 +46,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 import org.mhisoft.common.util.StringUtils;
 
-public class JceEncryption implements CipherInputStreamProvider, CipherOutputStreamProvider {
+public final class JceEncryption implements CipherInputStreamProvider, CipherOutputStreamProvider {
 
 	private static final Logger logger = Logger.getLogger(JceEncryption.class.getName());
 
@@ -55,11 +55,10 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 	private static final int DEFAULT_KEYSIZE = 256;
 	private static final int DEFAULT_ITERATIONS = 1000;
 
-
-	private EncryptionConfig config;
-	private EncryptionRuntime runtime;
-	private static JceEncryption defaultEngine = null;
-	private static Object lock = new Object();
+	private transient EncryptionConfig config;
+	private transient EncryptionRuntime runtime;
+	private transient static JceEncryption defaultEngine = null;
+	private static transient Object lock = new Object();
 
 
 
@@ -153,7 +152,7 @@ public class JceEncryption implements CipherInputStreamProvider, CipherOutputStr
 		final transient Cipher encrypter;
 		final transient Cipher decrypter;
 		transient byte[] iv;
-		final EncryptionConfig config;
+		final transient EncryptionConfig config;
 
 
 		public EncryptionRuntime(final EncryptionConfig _config) throws GeneralSecurityException {

@@ -53,7 +53,7 @@ import org.jasypt.salt.SaltGenerator;
  * @author Tony Xue
  * @since Mar, 2016
  */
-public class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncryptor {
+public final class StandardPBEByteEncryptor implements PBEByteCleanablePasswordEncryptor {
 
 
 	/**

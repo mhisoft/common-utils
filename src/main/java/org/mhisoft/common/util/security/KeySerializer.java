@@ -31,7 +31,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.Key;
 
-public class KeySerializer {
+public final class KeySerializer {
 
 	public static KeySerializer instance = new KeySerializer();
 

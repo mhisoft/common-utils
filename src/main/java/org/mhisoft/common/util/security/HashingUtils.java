@@ -42,7 +42,7 @@ I made the following chagnes:
 
 
  */
-public class HashingUtils {
+public final class HashingUtils {
 
 	@SuppressWarnings("serial")
 	static public class InvalidHashException extends Exception {
