@@ -24,13 +24,13 @@
 
 package org.mhisoft.common.util;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mhisoft.common.util.security.PBEEncryptor;
+
 import java.io.IOException;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.mhisoft.common.util.security.PBEEncryptor;
 
 
 /**
@@ -68,7 +68,7 @@ public class PBEEncryptorTest {
 			byte[]  dec = encryptor2.decrypt(enc1_2, algorithmParameters);
 			System.out.println(StringUtils.bytesToString(dec));
 
-			Assert.assertEquals(s1,  StringUtils.bytesToString(dec));
+			Assertions.assertEquals(s1,  StringUtils.bytesToString(dec));
 
 
 			//again, salt is changed.
@@ -82,7 +82,7 @@ public class PBEEncryptorTest {
 
 			byte[]  dec2 = encryptor2.decrypt(enc2, algorithmParameters2);
 			System.out.println(StringUtils.bytesToString(dec2));
-			Assert.assertEquals(s2,  StringUtils.bytesToString(dec2));
+			Assertions.assertEquals(s2,  StringUtils.bytesToString(dec2));
 
 
 

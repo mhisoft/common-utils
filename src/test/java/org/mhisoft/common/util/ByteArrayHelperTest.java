@@ -23,8 +23,9 @@
 
 package org.mhisoft.common.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Description:
@@ -37,7 +38,7 @@ public class ByteArrayHelperTest {
 	public void testLong() {
 		for (long i=1;  i<74058508l; i=i+5 ) {
 			byte[] b = ByteArrayHelper.longToBytes(i);
-			Assert.assertEquals(ByteArrayHelper.bytesToLong(b), i);
+			Assertions.assertEquals(ByteArrayHelper.bytesToLong(b), i);
 		}
 	}
 
@@ -45,7 +46,7 @@ public class ByteArrayHelperTest {
 	public void testInt() {
 		for (int i=1;  i<74058508; i=i+1 ) {
 			byte[] b = ByteArrayHelper.intToBytes(i);
-			Assert.assertEquals(ByteArrayHelper.bytesToInt(b), i);
+			Assertions.assertEquals(ByteArrayHelper.bytesToInt(b), i);
 		}
 	}
 }

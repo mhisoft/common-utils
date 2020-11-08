@@ -23,19 +23,19 @@
 
 package org.mhisoft.common.util;
 
-import java.security.GeneralSecurityException;
-import java.security.Key;
-
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mhisoft.common.util.security.JceEncryption;
 import org.mhisoft.common.util.security.KeySerializer;
+
+import java.security.GeneralSecurityException;
+import java.security.Key;
 
 public class JceEnryptionTest {
 	static JceEncryption engine;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setup() {
 			engine = JceEncryption.getDefaultEngine();
 	}
@@ -43,23 +43,23 @@ public class JceEnryptionTest {
 	@Test
 	public void testEncryptDecrypt() throws Exception {
 		System.out.println(engine);
-		Assert.assertEquals("256", "" + engine.getKeySize());
+		Assertions.assertEquals("256", "" + engine.getKeySize());
 		String text = "Test123!";
 		String s = engine.encrypt(text);
 		System.out.println("Encrypted value:" + s);
-		Assert.assertEquals(engine.decrypt(s), text);
+		Assertions.assertEquals(engine.decrypt(s), text);
 
 		//test null text
 		for (int i = 0; i <10; i++) {
 			text = null;
 			s = engine.encrypt(text);
 			String de = engine.decrypt(s);
-			Assert.assertEquals(de, "");
+			Assertions.assertEquals(de, "");
 
 			//test null text
 			text = "a";
 			s = engine.encrypt(text);
-			Assert.assertEquals(engine.decrypt(s), text);
+			Assertions.assertEquals(engine.decrypt(s), text);
 		}
 
 	}
@@ -73,7 +73,7 @@ public class JceEnryptionTest {
 		JceEncryption engine2 = JceEncryption.createEngine();
 		String s2= engine2.encrypt(text);
 		System.out.println(s2);
-		Assert.assertNotEquals(s,s2);
+		Assertions.assertNotSame(s,s2);
 
 	}
 
@@ -85,7 +85,7 @@ public class JceEnryptionTest {
 		String enc1 = "Zbfi2CUsIHcv0VB3QMzDkg==";
 		try {
 			System.out.println("decrypted to:"+engine.decrypt(enc1));
-			Assert.fail("YOu should not be able to decrypt.");
+			Assertions.fail("YOu should not be able to decrypt.");
 		} catch (GeneralSecurityException e) {
 			//
 		}
@@ -100,7 +100,7 @@ public class JceEnryptionTest {
 		JceEncryption engine2 = new JceEncryption(KeySerializer.instance.serialize(k));
 		try {
 			engine2.decrypt(encS);
-			Assert.fail("YOu should not be able to decrypt using another key.");
+			Assertions.fail("YOu should not be able to decrypt using another key.");
 		} catch (GeneralSecurityException e) {
 			//javax.crypto.BadPaddingException: Given final block not properly padded
 			//e.printStackTrace();
