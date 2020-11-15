@@ -23,10 +23,11 @@
 
 package org.mhisoft.common.util;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Description:
@@ -43,18 +44,18 @@ public class FileUtilsTest {
 		String s = "S:/projects/mhisoft/evault-app/LICENSE";
 
 		s= s.replaceAll("/", separator );
-		Assert.assertEquals("LICENSE", FileUtils.getFileNameWithoutPath(s));
+		Assertions.assertEquals("LICENSE", FileUtils.getFileNameWithoutPath(s));
 	}
 
 	@Test
 	public void getFileNameWithoutPath() {
 		String s = "S:/projects/mhisoft/evault-app/dist/test.docx";
 		s = s.replaceAll("/", separator);
-		Assert.assertEquals("test.docx", FileUtils.getFileNameWithoutPath(s));
+		Assertions.assertEquals("test.docx", FileUtils.getFileNameWithoutPath(s));
 
 		String s3 = "S:/projects/mhisoft/evault-app/";
 		s3 = s3.replaceAll("/", separator);
-		Assert.assertNull(FileUtils.getFileNameWithoutPath(s3));
+		Assertions.assertNull(FileUtils.getFileNameWithoutPath(s3));
 	}
 
 	@Test
@@ -62,14 +63,14 @@ public class FileUtilsTest {
 		String dir = "S:/projects/mhisoft/evault-app/dist".replaceAll("/", separator);
 
 		String s = dir + File.separator + "test.docx";
-		Assert.assertEquals(dir, FileUtils.gerFileDir(s));
+		Assertions.assertEquals(dir, FileUtils.gerFileDir(s));
 
 		String s2 =  dir;
-		Assert.assertEquals("S:/projects/mhisoft/evault-app".replaceAll("/", separator), FileUtils.gerFileDir(s2));
+		Assertions.assertEquals("S:/projects/mhisoft/evault-app".replaceAll("/", separator), FileUtils.gerFileDir(s2));
 
 		String s3 = "S:/projects/mhisoft/evault-app/";
 		s3=s3.replaceAll("/", separator);
-		Assert.assertEquals("S:/projects/mhisoft/evault-app".replaceAll("/",separator),  FileUtils.gerFileDir(s3));
+		Assertions.assertEquals("S:/projects/mhisoft/evault-app".replaceAll("/",separator),  FileUtils.gerFileDir(s3));
 	}
 
 
@@ -77,7 +78,7 @@ public class FileUtilsTest {
 	public void getFileDirRelative() {
 		String s3 = "./target/classes/AttachmentServiceTest.dat";
 		s3=s3.replaceAll("/", separator);
-		Assert.assertEquals("./target/classes".replaceAll("/",separator), FileUtils.gerFileDir(s3));
+		Assertions.assertEquals("./target/classes".replaceAll("/",separator), FileUtils.gerFileDir(s3));
 
 	}
 }

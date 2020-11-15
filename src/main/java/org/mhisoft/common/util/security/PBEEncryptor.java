@@ -23,14 +23,15 @@
 
 package org.mhisoft.common.util.security;
 
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.jasypt.iv.RandomIvGenerator;
+import org.jasypt.salt.RandomSaltGenerator;
+
 import java.io.IOException;
 import java.security.AlgorithmParameters;
 
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.jasypt.salt.RandomSaltGenerator;
-
 /**
- * Description:  Does encryption and decryption
+ * Description:  Does encryption and decryption; a facade wrapper util class for the StandardPBEByteEncryptor
  * Usage. init() first and use the same instance to do encrypt() and decrypt()
  *
  * @author Tony Xue
@@ -55,6 +56,7 @@ public final class PBEEncryptor {
 
 	//share a  resuable salt generator.
 	static RandomSaltGenerator saltGenerator = new RandomSaltGenerator() ;
+	static RandomIvGenerator ivGenerator = new RandomIvGenerator();
 
 	public PBEEncryptor() {
 
@@ -69,6 +71,7 @@ public final class PBEEncryptor {
 		this.password = pass;
 		encryptor = new StandardPBEByteEncryptor();
 		encryptor.setSaltGenerator(saltGenerator);
+		encryptor.setIvGenerator(ivGenerator);
 		encryptor.setAlgorithm(ALGORITHM);
 		encryptor.setPassword(this.password);
 		encryptor.setProviderName("SunJCE");

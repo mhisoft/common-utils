@@ -23,16 +23,15 @@
 
 package org.mhisoft.common.util;
 
-import java.util.List;
-import java.util.zip.GZIPInputStream;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
-
+import java.util.List;
+import java.util.zip.GZIPInputStream;
 /**
  * Description:
  *
@@ -52,7 +51,7 @@ public class CompressionUtilTest {
 		GZIPInputStream decompressedStream = new GZIPInputStream(compressedStream);
 		List<String> lines = IOUtils.readLines(decompressedStream);
 		String output = lines.get(0);
-		Assert.assertEquals(input, output);
+		Assertions.assertEquals(input, output);
 
 	}
 
@@ -72,7 +71,7 @@ public class CompressionUtilTest {
 		GZIPInputStream decompressedStream = new GZIPInputStream(in);
 		List<String> lines = IOUtils.readLines(decompressedStream);
 		String output = lines.get(0);
-		Assert.assertEquals(input, output);
+		Assertions.assertEquals(input, output);
 
 	}
 }

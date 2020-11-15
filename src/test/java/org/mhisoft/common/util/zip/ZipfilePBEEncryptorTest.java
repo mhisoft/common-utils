@@ -23,26 +23,20 @@
 
 package org.mhisoft.common.util.zip;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mhisoft.common.util.FileUtils;
+import org.mhisoft.common.zip.api.AesZipFileDecrypter;
+import org.mhisoft.common.zip.api.AesZipFileEncrypter;
+import org.mhisoft.common.zip.impl.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.mhisoft.common.util.FileUtils;
-import org.mhisoft.common.zip.api.AesZipFileDecrypter;
-import org.mhisoft.common.zip.api.AesZipFileEncrypter;
-import org.mhisoft.common.zip.impl.AESDecrypter;
-import org.mhisoft.common.zip.impl.AESDecrypterJCA;
-import org.mhisoft.common.zip.impl.AESEncrypter;
-import org.mhisoft.common.zip.impl.AESEncrypterJCA;
-import org.mhisoft.common.zip.impl.AESStandardPBEByteDecryptor;
-import org.mhisoft.common.zip.impl.AESStandardPBEByteEncryptor;
-import org.mhisoft.common.zip.impl.ExtZipEntry;
 
 
 /**
@@ -105,7 +99,7 @@ public class ZipfilePBEEncryptorTest {
 
 	}
 
-	@Test
+//	@Test
 	public void aesStandardPBEZipAndUnZipTest() {
 
 		     /*encrypt*/
@@ -151,7 +145,7 @@ public class ZipfilePBEEncryptorTest {
 						byte[] exploded = FileUtils.readFile(newFN);
 						InputStream file = this.getClass().getClassLoader().getResourceAsStream("test1.txt");
 						byte[] file1Bytes = FileUtils.readFile(file);
-						Assert.assertTrue(Arrays.equals(exploded,  file1Bytes));
+						Assertions.assertTrue(Arrays.equals(exploded,  file1Bytes));
 					}
 				}
 

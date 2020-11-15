@@ -29,16 +29,16 @@
  */
 package org.mhisoft.common.util;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mhisoft.common.util.security.HashingUtils;
 
 
 public class HashingUtilsTest
 {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setup() {
 		HashingUtils.init();
 	}
@@ -79,7 +79,7 @@ public class HashingUtilsTest
 						"(At hash length of " +
 						badHashLength + ")"
 				);
-				Assert.fail();
+				Assertions.fail();
 				System.exit(1);
 			}
 
@@ -137,13 +137,13 @@ public class HashingUtilsTest
 			}
 			if(failure) {
 				System.out.println("TESTS FAILED!");
-				Assert.fail();
+				Assertions.fail();
 				System.exit(1);
 			}
 		}
 		catch(Exception ex)
 		{
-			Assert.fail();
+			Assertions.fail();
 			System.out.println("ERROR: " + ex);
 			System.exit(1);
 		}
@@ -167,12 +167,12 @@ public class HashingUtilsTest
 				System.out.println("Algorithm swap: pass");
 			} else {
 				System.out.println("Algorithm swap: FAIL");
-				Assert.fail();
+				Assertions.fail();
 				System.exit(1);
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			Assert.fail();
+			Assertions.fail();
 			System.exit(1);
 		}
 
@@ -204,13 +204,13 @@ public class HashingUtilsTest
 			}
 			if(failure) {
 				System.out.println("TESTS FAILED!");
-				Assert.fail();
+				Assertions.fail();
 				System.exit(1);
 			}
 		}
 		catch(Exception ex)
 		{
-			Assert.fail();
+			Assertions.fail();
 			System.out.println("ERROR: " + ex);
 			System.exit(1);
 		}
