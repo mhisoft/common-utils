@@ -54,7 +54,7 @@ import org.mhisoft.common.zip.impl.ExtZipEntry;
 public class ZipfilePBEEncryptorTest {
 	private static final Logger LOG = Logger.getLogger(ZipfilePBEEncryptorTest.class.getName());
 
-	@Test
+	//@Test
 	public void aesEncrypterJCAZipAndUnZipTest() {
 
 		     /*encrypt*/
@@ -105,7 +105,7 @@ public class ZipfilePBEEncryptorTest {
 
 	}
 
-	@Test
+//	@Test
 	public void aesStandardPBEZipAndUnZipTest() {
 
 		     /*encrypt*/
